@@ -13,6 +13,10 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('@/views/LoginPage.vue')
   },
   {
+    path: '/scan',
+    component: () => import('@/views/ScanPage.vue')
+  },
+  {
     path: '/items/new',
     component: () => import('@/views/ItemFormPage.vue')
   },
@@ -55,7 +59,7 @@ const router = createRouter({
 
 router.beforeEach((to) => {
   const auth = useAuthStore()
-  if ((to.path.startsWith('/tabs') || to.path.startsWith('/items')) && !auth.isAuthenticated) return '/login'
+  if ((to.path.startsWith('/tabs') || to.path.startsWith('/items') || to.path.startsWith('/scan')) && !auth.isAuthenticated) return '/login'
   return true
 })
 
