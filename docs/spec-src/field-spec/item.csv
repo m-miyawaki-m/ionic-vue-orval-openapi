@@ -1,0 +1,5 @@
+group,field,type,required,minimum,maximum,minLength,maxLength,enum,pattern,example,note
+item,name,string,true,,,1,30,,,Sample,商品名
+item,price,integer,true,0,1000000,,,,,1200,価格
+item,category,string,true,,,,,food|drink|other,,food,分類
+item,code,string,true,,,,,,^[A-Z0-9]{8}$,ABCD1234,コード

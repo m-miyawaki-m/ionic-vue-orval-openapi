@@ -1,0 +1,3 @@
+group,field,type,required,minimum,maximum,minLength,maxLength,enum,pattern,example,note
+login,username,string,true,,,3,20,,,demo,ユーザ名
+login,password,string,true,,,8,64,,,password1,パスワード

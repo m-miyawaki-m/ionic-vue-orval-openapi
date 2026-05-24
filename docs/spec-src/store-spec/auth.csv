@@ -1,0 +1,3 @@
+store,action,from,to,note
+auth,login,unauthenticated,authenticated,token保持
+auth,logout,authenticated,unauthenticated,tokenクリア

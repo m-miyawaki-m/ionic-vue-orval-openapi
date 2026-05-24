@@ -1,0 +1,4 @@
+screen,event,trigger,handler,expected,note
+item,tapRow,リスト行タップ,router.push,Item詳細へ遷移,
+item,submitValid,有効入力で保存,save,登録/更新が成功し一覧へ,
+item,submitInvalid,無効入力で保存,validate,エラー表示・保存されない,
