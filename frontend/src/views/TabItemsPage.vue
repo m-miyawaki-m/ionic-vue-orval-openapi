@@ -13,17 +13,12 @@
       <div v-else-if="error" data-testid="items-error">Error loading items.</div>
       <div v-else-if="items.length === 0" data-testid="items-empty">No items found.</div>
       <ion-list v-else data-testid="items-list">
-        <ion-item
+        <ItemListItem
           v-for="item in items"
           :key="item.id"
-          button
-          @click="router.push('/items/' + item.id)"
-        >
-          <ion-label>
-            <h2>{{ item.name }}</h2>
-            <p>{{ item.category }} / ¥{{ item.price }}</p>
-          </ion-label>
-        </ion-item>
+          :item="item"
+          @select="goDetail"
+        />
       </ion-list>
     </ion-content>
   </ion-page>
@@ -35,11 +30,16 @@ import { useRouter } from 'vue-router'
 import {
   IonPage, IonHeader, IonToolbar, IonTitle, IonContent,
   IonButtons, IonButton,
-  IonList, IonItem, IonLabel,
+  IonList,
 } from '@ionic/vue'
 import { useItems } from '../composables/useItems'
+import ItemListItem from '../components/ItemListItem.vue'
 
 const router = useRouter()
 const { items, loading, error, load } = useItems()
 onMounted(load)
+
+function goDetail(id: number) {
+  router.push('/items/' + id)
+}
 </script>
