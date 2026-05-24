@@ -4,6 +4,8 @@ export default defineConfig({
   api: {
     input: '../openapi/openapi.yaml',
     output: {
+      // NOTE: mode 'tags-split' emits per-tag dirs (e.g. src/api/items/items.ts);
+      // no top-level src/api/index.ts barrel is created. Import from the per-tag path.
       target: 'src/api/index.ts',
       schemas: 'src/api/models',
       client: 'axios-functions',
