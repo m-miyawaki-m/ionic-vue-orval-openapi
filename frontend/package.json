@@ -9,7 +9,8 @@
     "preview": "vite preview",
     "test:e2e": "cypress run",
     "test:unit": "vitest",
-    "lint": "eslint ."
+    "lint": "eslint .",
+    "lint:openapi": "redocly lint ../openapi/openapi.yaml"
   },
   "dependencies": {
     "@capacitor/android": "5.7.8",
@@ -28,6 +29,7 @@
     "zod": "^4.4.3"
   },
   "devDependencies": {
+    "@redocly/cli": "^1.34.0",
     "@playwright/test": "^1.48.0",
     "@types/js-yaml": "^4.0.9",
     "@vitejs/plugin-vue": "^4.0.0",

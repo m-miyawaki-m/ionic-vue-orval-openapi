@@ -1,0 +1,179 @@
+openapi: 3.0.3
+info:
+  title: ionic-vue-orval PoC API
+  version: 1.0.0
+servers:
+  - url: /api
+tags:
+  - name: auth
+  - name: items
+paths:
+  /auth/login:
+    post:
+      tags: [auth]
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/LoginResponse'
+  /items:
+    get:
+      tags: [items]
+      operationId: listItems
+      parameters:
+        - name: q
+          in: query
+          required: false
+          schema: { type: string, maxLength: 50 }
+        - name: code
+          in: query
+          required: false
+          schema: { type: string, pattern: '^[A-Z0-9]{8}$' }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Item' }
+    post:
+      tags: [items]
+      operationId: createItem
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ItemInput' }
+      responses:
+        '201':
+          description: Created
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Item' }
+  /items/{id}:
+    get:
+      tags: [items]
+      operationId: getItem
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer, format: int64 }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Item' }
+    put:
+      tags: [items]
+      operationId: updateItem
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer, format: int64 }
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema: { $ref: '#/components/schemas/ItemInput' }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema: { $ref: '#/components/schemas/Item' }
+    delete:
+      tags: [items]
+      operationId: deleteItem
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema: { type: integer, format: int64 }
+      responses:
+        '204':
+          description: No Content
+  /search:
+    get:
+      tags: [items]
+      operationId: searchItems
+      parameters:
+        - name: q
+          in: query
+          required: true
+          schema: { type: string, minLength: 1, maxLength: 50 }
+      responses:
+        '200':
+          description: OK
+          content:
+            application/json:
+              schema:
+                type: array
+                items: { $ref: '#/components/schemas/Item' }
+components:
+  schemas:
+    LoginRequest:
+      type: object
+      required: [username, password]
+      properties:
+        username:
+          type: string
+          minLength: 3
+          maxLength: 20
+          example: demo
+        password:
+          type: string
+          minLength: 8
+          maxLength: 64
+          example: password1
+    LoginResponse:
+      type: object
+      required: [token]
+      properties:
+        token:
+          type: string
+          example: mock-token-123
+    ItemInput:
+      type: object
+      required: [name, price, category, code]
+      properties:
+        name:
+          type: string
+          minLength: 1
+          maxLength: 30
+          example: Sample Item
+        price:
+          type: integer
+          minimum: 0
+          maximum: 1000000
+          example: 1200
+        category:
+          type: string
+          enum: [food, drink, other]
+          example: food
+        code:
+          type: string
+          pattern: '^[A-Z0-9]{8}$'
+          example: ABCD1234
+    Item:
+      allOf:
+        - $ref: '#/components/schemas/ItemInput'
+        - type: object
+          required: [id]
+          properties:
+            id:
+              type: integer
+              format: int64
+              example: 1
