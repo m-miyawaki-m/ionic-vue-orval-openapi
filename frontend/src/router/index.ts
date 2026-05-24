@@ -1,11 +1,16 @@
 import { createRouter, createWebHistory } from '@ionic/vue-router';
 import { RouteRecordRaw } from 'vue-router';
 import TabsPage from '../views/TabsPage.vue'
+import { useAuthStore } from '@/stores/auth'
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: '/',
     redirect: '/tabs/tab1'
+  },
+  {
+    path: '/login',
+    component: () => import('@/views/LoginPage.vue')
   },
   {
     path: '/tabs/',
@@ -34,6 +39,12 @@ const routes: Array<RouteRecordRaw> = [
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes
+})
+
+router.beforeEach((to) => {
+  const auth = useAuthStore()
+  if (to.path.startsWith('/tabs') && !auth.isAuthenticated) return '/login'
+  return true
 })
 
 export default router
