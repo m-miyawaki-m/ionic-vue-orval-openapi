@@ -1,0 +1,562 @@
+[
+  {
+    "id": "bnd:openapi:item:name:minLength-1",
+    "source": "openapi",
+    "kind": "boundary",
+    "group": "item",
+    "field": "name",
+    "value": "",
+    "expectValid": false,
+    "label": "minLength-1"
+  },
+  {
+    "id": "bnd:openapi:item:name:minLength",
+    "source": "openapi",
+    "kind": "boundary",
+    "group": "item",
+    "field": "name",
+    "value": "a",
+    "expectValid": true,
+    "label": "minLength"
+  },
+  {
+    "id": "bnd:openapi:item:name:maxLength",
+    "source": "openapi",
+    "kind": "boundary",
+    "group": "item",
+    "field": "name",
+    "value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "expectValid": true,
+    "label": "maxLength"
+  },
+  {
+    "id": "bnd:openapi:item:name:maxLength+1",
+    "source": "openapi",
+    "kind": "boundary",
+    "group": "item",
+    "field": "name",
+    "value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "expectValid": false,
+    "label": "maxLength+1"
+  },
+  {
+    "id": "bnd:openapi:item:name:required-absent",
+    "source": "openapi",
+    "kind": "boundary",
+    "group": "item",
+    "field": "name",
+    "value": "__ABSENT__",
+    "expectValid": false,
+    "label": "required-absent"
+  },
+  {
+    "id": "bnd:openapi:item:price:minimum-1",
+    "source": "openapi",
+    "kind": "boundary",
+    "group": "item",
+    "field": "price",
+    "value": -1,
+    "expectValid": false,
+    "label": "minimum-1"
+  },
+  {
+    "id": "bnd:openapi:item:price:minimum",
+    "source": "openapi",
+    "kind": "boundary",
+    "group": "item",
+    "field": "price",
+    "value": 0,
+    "expectValid": true,
+    "label": "minimum"
+  },
+  {
+    "id": "bnd:openapi:item:price:maximum",
+    "source": "openapi",
+    "kind": "boundary",
+    "group": "item",
+    "field": "price",
+    "value": 1000000,
+    "expectValid": true,
+    "label": "maximum"
+  },
+  {
+    "id": "bnd:openapi:item:price:maximum+1",
+    "source": "openapi",
+    "kind": "boundary",
+    "group": "item",
+    "field": "price",
+    "value": 1000001,
+    "expectValid": false,
+    "label": "maximum+1"
+  },
+  {
+    "id": "bnd:openapi:item:price:required-absent",
+    "source": "openapi",
+    "kind": "boundary",
+    "group": "item",
+    "field": "price",
+    "value": "__ABSENT__",
+    "expectValid": false,
+    "label": "required-absent"
+  },
+  {
+    "id": "bnd:openapi:item:category:enum:food",
+    "source": "openapi",
+    "kind": "boundary",
+    "group": "item",
+    "field": "category",
+    "value": "food",
+    "expectValid": true,
+    "label": "enum:food"
+  },
+  {
+    "id": "bnd:openapi:item:category:enum:drink",
+    "source": "openapi",
+    "kind": "boundary",
+    "group": "item",
+    "field": "category",
+    "value": "drink",
+    "expectValid": true,
+    "label": "enum:drink"
+  },
+  {
+    "id": "bnd:openapi:item:category:enum:other",
+    "source": "openapi",
+    "kind": "boundary",
+    "group": "item",
+    "field": "category",
+    "value": "other",
+    "expectValid": true,
+    "label": "enum:other"
+  },
+  {
+    "id": "bnd:openapi:item:category:enum:invalid",
+    "source": "openapi",
+    "kind": "boundary",
+    "group": "item",
+    "field": "category",
+    "value": "__invalid_enum__",
+    "expectValid": false,
+    "label": "enum:invalid"
+  },
+  {
+    "id": "bnd:openapi:item:category:required-absent",
+    "source": "openapi",
+    "kind": "boundary",
+    "group": "item",
+    "field": "category",
+    "value": "__ABSENT__",
+    "expectValid": false,
+    "label": "required-absent"
+  },
+  {
+    "id": "bnd:openapi:item:code:pattern:valid",
+    "source": "openapi",
+    "kind": "boundary",
+    "group": "item",
+    "field": "code",
+    "value": "ABCD1234",
+    "expectValid": true,
+    "label": "pattern:valid"
+  },
+  {
+    "id": "bnd:openapi:item:code:pattern:invalid",
+    "source": "openapi",
+    "kind": "boundary",
+    "group": "item",
+    "field": "code",
+    "value": "!!",
+    "expectValid": false,
+    "label": "pattern:invalid"
+  },
+  {
+    "id": "bnd:openapi:item:code:required-absent",
+    "source": "openapi",
+    "kind": "boundary",
+    "group": "item",
+    "field": "code",
+    "value": "__ABSENT__",
+    "expectValid": false,
+    "label": "required-absent"
+  },
+  {
+    "id": "bnd:openapi:login:username:minLength-1",
+    "source": "openapi",
+    "kind": "boundary",
+    "group": "login",
+    "field": "username",
+    "value": "aa",
+    "expectValid": false,
+    "label": "minLength-1"
+  },
+  {
+    "id": "bnd:openapi:login:username:minLength",
+    "source": "openapi",
+    "kind": "boundary",
+    "group": "login",
+    "field": "username",
+    "value": "aaa",
+    "expectValid": true,
+    "label": "minLength"
+  },
+  {
+    "id": "bnd:openapi:login:username:maxLength",
+    "source": "openapi",
+    "kind": "boundary",
+    "group": "login",
+    "field": "username",
+    "value": "aaaaaaaaaaaaaaaaaaaa",
+    "expectValid": true,
+    "label": "maxLength"
+  },
+  {
+    "id": "bnd:openapi:login:username:maxLength+1",
+    "source": "openapi",
+    "kind": "boundary",
+    "group": "login",
+    "field": "username",
+    "value": "aaaaaaaaaaaaaaaaaaaaa",
+    "expectValid": false,
+    "label": "maxLength+1"
+  },
+  {
+    "id": "bnd:openapi:login:username:required-absent",
+    "source": "openapi",
+    "kind": "boundary",
+    "group": "login",
+    "field": "username",
+    "value": "__ABSENT__",
+    "expectValid": false,
+    "label": "required-absent"
+  },
+  {
+    "id": "bnd:openapi:login:password:minLength-1",
+    "source": "openapi",
+    "kind": "boundary",
+    "group": "login",
+    "field": "password",
+    "value": "aaaaaaa",
+    "expectValid": false,
+    "label": "minLength-1"
+  },
+  {
+    "id": "bnd:openapi:login:password:minLength",
+    "source": "openapi",
+    "kind": "boundary",
+    "group": "login",
+    "field": "password",
+    "value": "aaaaaaaa",
+    "expectValid": true,
+    "label": "minLength"
+  },
+  {
+    "id": "bnd:openapi:login:password:maxLength",
+    "source": "openapi",
+    "kind": "boundary",
+    "group": "login",
+    "field": "password",
+    "value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "expectValid": true,
+    "label": "maxLength"
+  },
+  {
+    "id": "bnd:openapi:login:password:maxLength+1",
+    "source": "openapi",
+    "kind": "boundary",
+    "group": "login",
+    "field": "password",
+    "value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "expectValid": false,
+    "label": "maxLength+1"
+  },
+  {
+    "id": "bnd:openapi:login:password:required-absent",
+    "source": "openapi",
+    "kind": "boundary",
+    "group": "login",
+    "field": "password",
+    "value": "__ABSENT__",
+    "expectValid": false,
+    "label": "required-absent"
+  },
+  {
+    "id": "bnd:field-spec:item:name:minLength-1",
+    "source": "field-spec",
+    "kind": "boundary",
+    "group": "item",
+    "field": "name",
+    "value": "",
+    "expectValid": false,
+    "label": "minLength-1"
+  },
+  {
+    "id": "bnd:field-spec:item:name:minLength",
+    "source": "field-spec",
+    "kind": "boundary",
+    "group": "item",
+    "field": "name",
+    "value": "a",
+    "expectValid": true,
+    "label": "minLength"
+  },
+  {
+    "id": "bnd:field-spec:item:name:maxLength",
+    "source": "field-spec",
+    "kind": "boundary",
+    "group": "item",
+    "field": "name",
+    "value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "expectValid": true,
+    "label": "maxLength"
+  },
+  {
+    "id": "bnd:field-spec:item:name:maxLength+1",
+    "source": "field-spec",
+    "kind": "boundary",
+    "group": "item",
+    "field": "name",
+    "value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "expectValid": false,
+    "label": "maxLength+1"
+  },
+  {
+    "id": "bnd:field-spec:item:name:required-absent",
+    "source": "field-spec",
+    "kind": "boundary",
+    "group": "item",
+    "field": "name",
+    "value": "__ABSENT__",
+    "expectValid": false,
+    "label": "required-absent"
+  },
+  {
+    "id": "bnd:field-spec:item:price:minimum-1",
+    "source": "field-spec",
+    "kind": "boundary",
+    "group": "item",
+    "field": "price",
+    "value": -1,
+    "expectValid": false,
+    "label": "minimum-1"
+  },
+  {
+    "id": "bnd:field-spec:item:price:minimum",
+    "source": "field-spec",
+    "kind": "boundary",
+    "group": "item",
+    "field": "price",
+    "value": 0,
+    "expectValid": true,
+    "label": "minimum"
+  },
+  {
+    "id": "bnd:field-spec:item:price:maximum",
+    "source": "field-spec",
+    "kind": "boundary",
+    "group": "item",
+    "field": "price",
+    "value": 1000000,
+    "expectValid": true,
+    "label": "maximum"
+  },
+  {
+    "id": "bnd:field-spec:item:price:maximum+1",
+    "source": "field-spec",
+    "kind": "boundary",
+    "group": "item",
+    "field": "price",
+    "value": 1000001,
+    "expectValid": false,
+    "label": "maximum+1"
+  },
+  {
+    "id": "bnd:field-spec:item:price:required-absent",
+    "source": "field-spec",
+    "kind": "boundary",
+    "group": "item",
+    "field": "price",
+    "value": "__ABSENT__",
+    "expectValid": false,
+    "label": "required-absent"
+  },
+  {
+    "id": "bnd:field-spec:item:category:enum:food",
+    "source": "field-spec",
+    "kind": "boundary",
+    "group": "item",
+    "field": "category",
+    "value": "food",
+    "expectValid": true,
+    "label": "enum:food"
+  },
+  {
+    "id": "bnd:field-spec:item:category:enum:drink",
+    "source": "field-spec",
+    "kind": "boundary",
+    "group": "item",
+    "field": "category",
+    "value": "drink",
+    "expectValid": true,
+    "label": "enum:drink"
+  },
+  {
+    "id": "bnd:field-spec:item:category:enum:other",
+    "source": "field-spec",
+    "kind": "boundary",
+    "group": "item",
+    "field": "category",
+    "value": "other",
+    "expectValid": true,
+    "label": "enum:other"
+  },
+  {
+    "id": "bnd:field-spec:item:category:enum:invalid",
+    "source": "field-spec",
+    "kind": "boundary",
+    "group": "item",
+    "field": "category",
+    "value": "__invalid_enum__",
+    "expectValid": false,
+    "label": "enum:invalid"
+  },
+  {
+    "id": "bnd:field-spec:item:category:required-absent",
+    "source": "field-spec",
+    "kind": "boundary",
+    "group": "item",
+    "field": "category",
+    "value": "__ABSENT__",
+    "expectValid": false,
+    "label": "required-absent"
+  },
+  {
+    "id": "bnd:field-spec:item:code:pattern:valid",
+    "source": "field-spec",
+    "kind": "boundary",
+    "group": "item",
+    "field": "code",
+    "value": "ABCD1234",
+    "expectValid": true,
+    "label": "pattern:valid"
+  },
+  {
+    "id": "bnd:field-spec:item:code:pattern:invalid",
+    "source": "field-spec",
+    "kind": "boundary",
+    "group": "item",
+    "field": "code",
+    "value": "!!",
+    "expectValid": false,
+    "label": "pattern:invalid"
+  },
+  {
+    "id": "bnd:field-spec:item:code:required-absent",
+    "source": "field-spec",
+    "kind": "boundary",
+    "group": "item",
+    "field": "code",
+    "value": "__ABSENT__",
+    "expectValid": false,
+    "label": "required-absent"
+  },
+  {
+    "id": "bnd:field-spec:login:username:minLength-1",
+    "source": "field-spec",
+    "kind": "boundary",
+    "group": "login",
+    "field": "username",
+    "value": "aa",
+    "expectValid": false,
+    "label": "minLength-1"
+  },
+  {
+    "id": "bnd:field-spec:login:username:minLength",
+    "source": "field-spec",
+    "kind": "boundary",
+    "group": "login",
+    "field": "username",
+    "value": "aaa",
+    "expectValid": true,
+    "label": "minLength"
+  },
+  {
+    "id": "bnd:field-spec:login:username:maxLength",
+    "source": "field-spec",
+    "kind": "boundary",
+    "group": "login",
+    "field": "username",
+    "value": "aaaaaaaaaaaaaaaaaaaa",
+    "expectValid": true,
+    "label": "maxLength"
+  },
+  {
+    "id": "bnd:field-spec:login:username:maxLength+1",
+    "source": "field-spec",
+    "kind": "boundary",
+    "group": "login",
+    "field": "username",
+    "value": "aaaaaaaaaaaaaaaaaaaaa",
+    "expectValid": false,
+    "label": "maxLength+1"
+  },
+  {
+    "id": "bnd:field-spec:login:username:required-absent",
+    "source": "field-spec",
+    "kind": "boundary",
+    "group": "login",
+    "field": "username",
+    "value": "__ABSENT__",
+    "expectValid": false,
+    "label": "required-absent"
+  },
+  {
+    "id": "bnd:field-spec:login:password:minLength-1",
+    "source": "field-spec",
+    "kind": "boundary",
+    "group": "login",
+    "field": "password",
+    "value": "aaaaaaa",
+    "expectValid": false,
+    "label": "minLength-1"
+  },
+  {
+    "id": "bnd:field-spec:login:password:minLength",
+    "source": "field-spec",
+    "kind": "boundary",
+    "group": "login",
+    "field": "password",
+    "value": "aaaaaaaa",
+    "expectValid": true,
+    "label": "minLength"
+  },
+  {
+    "id": "bnd:field-spec:login:password:maxLength",
+    "source": "field-spec",
+    "kind": "boundary",
+    "group": "login",
+    "field": "password",
+    "value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "expectValid": true,
+    "label": "maxLength"
+  },
+  {
+    "id": "bnd:field-spec:login:password:maxLength+1",
+    "source": "field-spec",
+    "kind": "boundary",
+    "group": "login",
+    "field": "password",
+    "value": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    "expectValid": false,
+    "label": "maxLength+1"
+  },
+  {
+    "id": "bnd:field-spec:login:password:required-absent",
+    "source": "field-spec",
+    "kind": "boundary",
+    "group": "login",
+    "field": "password",
+    "value": "__ABSENT__",
+    "expectValid": false,
+    "label": "required-absent"
+  }
+]

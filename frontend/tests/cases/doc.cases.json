@@ -1,0 +1,52 @@
+[
+  {
+    "id": "event-spec:item:0",
+    "source": "event-spec",
+    "kind": "operation",
+    "group": "item",
+    "description": "tapRow",
+    "precondition": "",
+    "action": "リスト行タップ → router.push",
+    "expected": "Item詳細へ遷移"
+  },
+  {
+    "id": "event-spec:item:1",
+    "source": "event-spec",
+    "kind": "operation",
+    "group": "item",
+    "description": "submitValid",
+    "precondition": "",
+    "action": "有効入力で保存 → save",
+    "expected": "登録/更新が成功し一覧へ"
+  },
+  {
+    "id": "event-spec:item:2",
+    "source": "event-spec",
+    "kind": "operation",
+    "group": "item",
+    "description": "submitInvalid",
+    "precondition": "",
+    "action": "無効入力で保存 → validate",
+    "expected": "エラー表示・保存されない"
+  },
+  {
+    "id": "store-spec:auth:0",
+    "source": "store-spec",
+    "kind": "state",
+    "group": "auth",
+    "description": "login",
+    "precondition": "unauthenticated",
+    "action": "login",
+    "expected": "authenticated"
+  },
+  {
+    "id": "store-spec:auth:1",
+    "source": "store-spec",
+    "kind": "state",
+    "group": "auth",
+    "description": "logout",
+    "precondition": "authenticated",
+    "action": "logout",
+    "expected": "unauthenticated"
+  }
+]

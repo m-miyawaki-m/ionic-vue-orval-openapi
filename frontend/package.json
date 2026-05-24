@@ -11,7 +11,8 @@
     "test:unit": "vitest run",
     "lint": "eslint .",
     "lint:openapi": "redocly lint ../openapi/openapi.yaml",
-    "gen": "orval --config ./orval.config.ts"
+    "gen": "orval --config ./orval.config.ts",
+    "gen:cases": "tsx scripts/gen-cases/cli.ts"
   },
   "dependencies": {
     "@capacitor/android": "5.7.8",
