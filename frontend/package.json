@@ -7,8 +7,8 @@
     "dev": "vite",
     "build": "vue-tsc && vite build",
     "preview": "vite preview",
-    "test:e2e": "cypress run",
-    "test:unit": "vitest",
+    "test:e2e": "playwright test",
+    "test:unit": "vitest run",
     "lint": "eslint .",
     "lint:openapi": "redocly lint ../openapi/openapi.yaml",
     "gen": "orval --config ./orval.config.ts"
