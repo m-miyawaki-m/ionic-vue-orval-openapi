@@ -1,0 +1,12 @@
+node_modules/
+frontend/node_modules/
+frontend/dist/
+frontend/android/app/build/
+frontend/android/build/
+frontend/android/.gradle/
+frontend/.vitest-report/
+frontend/test-results/
+frontend/playwright-report/
+frontend/blob-report/
+*.log
+.DS_Store
