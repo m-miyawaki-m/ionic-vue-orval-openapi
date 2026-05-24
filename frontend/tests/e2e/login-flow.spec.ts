@@ -1,7 +1,6 @@
 import { test, expect } from '@playwright/test'
 
-test('app boots and Tab1 shows items from MSW', async ({ page }) => {
-  // Auth guard redirects '/' to '/login'; must log in first (token is not persisted across reloads)
+test('login then see items', async ({ page }) => {
   await page.goto('/login')
   await page.getByTestId('login-username').locator('input').fill('demo')
   await page.getByTestId('login-password').locator('input').fill('password1')
