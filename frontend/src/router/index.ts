@@ -13,6 +13,18 @@ const routes: Array<RouteRecordRaw> = [
     component: () => import('@/views/LoginPage.vue')
   },
   {
+    path: '/items/new',
+    component: () => import('@/views/ItemFormPage.vue')
+  },
+  {
+    path: '/items/:id/edit',
+    component: () => import('@/views/ItemFormPage.vue')
+  },
+  {
+    path: '/items/:id',
+    component: () => import('@/views/ItemDetailPage.vue')
+  },
+  {
     path: '/tabs/',
     component: TabsPage,
     children: [
@@ -43,7 +55,7 @@ const router = createRouter({
 
 router.beforeEach((to) => {
   const auth = useAuthStore()
-  if (to.path.startsWith('/tabs') && !auth.isAuthenticated) return '/login'
+  if ((to.path.startsWith('/tabs') || to.path.startsWith('/items')) && !auth.isAuthenticated) return '/login'
   return true
 })
 

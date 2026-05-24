@@ -11,4 +11,13 @@ export const handlers = [
   }),
   http.get('/api/search', () => HttpResponse.json(itemsFixture)),
   http.post('/api/auth/login', () => HttpResponse.json({ token: 'mock-token-123' })),
+  http.post('/api/items', async ({ request }) => {
+    const body = (await request.json()) as Record<string, unknown>
+    return HttpResponse.json({ id: 999, ...body }, { status: 201 })
+  }),
+  http.put('/api/items/:id', async ({ request, params }) => {
+    const body = (await request.json()) as Record<string, unknown>
+    return HttpResponse.json({ id: Number(params.id), ...body })
+  }),
+  http.delete('/api/items/:id', () => new HttpResponse(null, { status: 204 })),
 ]
