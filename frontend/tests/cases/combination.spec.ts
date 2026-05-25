@@ -11,6 +11,14 @@ describe('generated combination (pairwise) cases validate against full schema', 
     expect(records.every((r) => r.kind === 'combination')).toBe(true)
   })
 
+  // Guard: every group must have a registry entry, else its records would be
+  // silently skipped below (false-green). Fails loudly if a new group lacks one.
+  it('all combination groups have a registry entry', () => {
+    for (const g of new Set(records.map((r) => r.group))) {
+      expect(registry[g], `missing registry entry for group '${g}'`).toBeDefined()
+    }
+  })
+
   for (const r of records) {
     const entry = registry[r.group]
     if (!entry) continue
