@@ -1,4 +1,5 @@
 import { Meta } from '@storybook/addon-docs/blocks'
+import loginShot from './assets/login.png'
 import itemsShot from './assets/items.png'
 
 <Meta title="Test Strategy/4. Functional / Application層" />
@@ -36,8 +37,9 @@ import itemsShot from './assets/items.png'
 npm run test:e2e   # smoke / login-flow / scan-flow / item-crud
 ```
 
-E2E到達画面の例:
+E2Eフローの画面例（login-flow: ログイン → 一覧）:
 
+<img src={loginShot} alt="login page (e2e start)" width={320} />
 <img src={itemsShot} alt="items list (e2e reached)" width={320} />
 
 > Application層の注意: 本番Androidビルドは MSW が動かない（`import.meta.env.DEV` 分岐）。データ依存の確認は MSW-in-build か backend が前提（`frontend/android-tests/README.md`）。

@@ -15,7 +15,7 @@ Androidは「ボタンのスクショテスト」をComponent層に含む → �
 
 ## 挙動の比較（Playwright CT vs Vitest browser mode）
 
-**SPEC §3-2 Component層（挙動）— 採用: Playwright CT（主）/ Vitest browser（比較対象として併設）**
+**採用: Playwright CT（主）／ Vitest browser mode（併設・比較）**
 
 | 候補 | 導入 | 忠実度(実ブラウザ) | Ionic対応 | 証跡(部品スクショ) | 安定性 | コスト | 評価 |
 |---|---|---|---|---|---|---|---|
@@ -43,7 +43,7 @@ npm run test:browser   # Vitest browser mode
 
 ## 見た目の比較（ビジュアル回帰）
 
-**SPEC §3-3 Component層（見た目）— 採用: Playwright `toHaveScreenshot`**
+**採用: Playwright `toHaveScreenshot`**
 
 | 候補 | 導入 | 決定性 | baseline管理 | 別スタック | コスト | 評価 |
 |---|---|---|---|---|---|---|
