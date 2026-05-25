@@ -31,7 +31,8 @@ describe('deriveBoundaryCases', () => {
   it('enum → each valid + one invalid', () => {
     const c: FieldConstraint = { group: 'item', field: 'category', type: 'string', required: true, enumValues: ['food', 'drink', 'other'], example: 'food' }
     const cases = deriveBoundaryCases(c)
-    expect(cases.filter((x) => x.expectValid).map((x) => x.value).sort()).toEqual(['drink', 'food', 'other'])
+    const enumValidValues = cases.filter((x) => x.expectValid && x.label.startsWith('enum:')).map((x) => x.value).sort()
+    expect(enumValidValues).toEqual(['drink', 'food', 'other'])
     expect(cases.some((x) => !x.expectValid)).toBe(true)
   })
 
@@ -46,5 +47,16 @@ describe('deriveBoundaryCases', () => {
     const c: FieldConstraint = { group: 'login', field: 'username', type: 'string', required: true, minLength: 3, maxLength: 20, example: 'demo' }
     const cases = deriveBoundaryCases(c)
     expect(cases.some((x) => x.value === '__ABSENT__' && x.expectValid === false && x.label === 'required-absent')).toBe(true)
+  })
+
+  it('normal → example を有効ケースとして追加', () => {
+    const c: FieldConstraint = { group: 'item', field: 'name', type: 'string', required: true, minLength: 1, maxLength: 30, example: 'Sample Item' }
+    const cases = deriveBoundaryCases(c)
+    expect(cases.some((x) => x.value === 'Sample Item' && x.expectValid && x.label === 'normal')).toBe(true)
+  })
+
+  it('normal → example が空ならスキップ', () => {
+    const c: FieldConstraint = { group: 'x', field: 'f', type: 'string', required: false, example: '' }
+    expect(deriveBoundaryCases(c).some((x) => x.label === 'normal')).toBe(false)
   })
 })

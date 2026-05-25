@@ -3,6 +3,10 @@ import { ABSENT, BoundaryCase, FieldConstraint } from './types'
 export function deriveBoundaryCases(c: FieldConstraint): BoundaryCase[] {
   const cases: BoundaryCase[] = []
 
+  if (c.example !== undefined && c.example !== '') {
+    cases.push({ value: c.example, expectValid: true, label: 'normal' })
+  }
+
   if (c.type === 'integer' || c.type === 'number') {
     if (c.minimum !== undefined) {
       cases.push({ value: c.minimum - 1, expectValid: false, label: 'minimum-1' })
