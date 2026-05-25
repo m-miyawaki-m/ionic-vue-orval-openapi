@@ -1,0 +1,59 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Test Strategy/0. Overview" />
+
+# テスト戦略カタログ — Android公式5層アンカー
+
+## 0. 狙い（3点）
+
+1. **Android公式の推奨テスト戦略**（developer.android.com/training/testing/fundamentals/strategies）に沿って層を再定義する。
+2. アプリ製造時の**設計成果物（概要設計／詳細設計）を、どの層・どのツールで検証するか**にマッピングする（既存 spec §7 の "テスト利用" 一覧を発展）。
+3. **複数候補があるツールは厚く比較し、採用理由を残し、動く実例を見せる**。見せる仕組みは **Storybook（Docs/MDX）をハブ**にする。
+
+> 「厚め」は本設計の第一級要件。単一採用の層でも「なぜそれか／不採用にした代替とその理由」まで書く。
+
+---
+
+## 1. 概念フレーム — Android 5層 ↔ 本PoC（Web/Capacitor）読み替え
+
+Android公式は **5層のテストピラミッド**を定義する（割合の数字は示さず「ピラミッド形＝小規模多数・大規模少数」を強調）。
+
+分類軸: **スコープ / ネットワークアクセス / 実行環境 / 忠実度 / ビルド種別 / 実行契機**。
+
+| Android層 | 定義（スコープ/環境/契機） | 本PoCの相当 | ツール | WebView読み替え・注記 |
+|---|---|---|---|---|
+| **Unit** | 単一関数/クラス・ネット無・ローカル(JVM)・全コミット | ロジック単体・境界値 | Vitest(jsdom) + `gen:cases` | JVM単体に相当。zod検証 / composable / store |
+| **Component** | UI部品・ローカル(Robolectric/Emu)・全コミット・**UI挙動＋ビジュアル回帰** | 部品の描画(挙動)＋見た目 | 挙動: Playwright CT / Vitest browser（比較）<br />見た目: Playwright `toHaveScreenshot` | Androidは"ボタンのスクショテスト"をComponentに含む → **現状のL2(挙動)+L3(見た目)はここに統合** |
+| **Functional** | 2+部品の連携・モック・pre-merge・画面状態管理 | 単一〜数画面の連携フロー | Playwright（MSWでモック） | RobolectricでなくブラウザDOM。MSWで決定的化 |
+| **Application** | アプリ全体・**デプロイ可能バイナリ**・mocked/staging/prod・post-merge | 全画面通しE2E | Playwright E2E（dev build, MSW）/ Maestro(エミュ) | "deployable binary"=Capacitor WebViewビルド。本番ビルドはMSW無しのため要 MSW-in-build（§5既知制約） |
+| **Release Candidate** | リリース(最適化)ビルド・本番サーバ・複数実機・pre-release・重要ジャーニー/性能 | 実機での重要導線 | Maestro / Appium（実機・release build） | 本PoCは手動・環境依存。本番API未実装ゆえ"本番サーバ"は代替（MSW-in-build or backend） |
+
+### 設計上の要点
+
+- **L2+L3 → Component層に統合**（カタログ上は1層、内部で「挙動 / 見た目」に分割）。
+- **上位層は契機（pre-merge / post-merge / pre-release）とビルド種別（debug / release）で区別**するのがAndroid流。現状の曖昧さをここで明確化する。
+- 本PoCは Capacitor WebView アプリのため、Android純正の Robolectric/Espresso ではなく Vitest/Playwright/Maestro/Appium に読み替える。**この読み替え自体が「一般的なフロント+Androidアプリ」への適用例**として価値を持つ。
+
+---
+
+## 分類軸の詳細
+
+| 分類軸 | 説明 |
+|---|---|
+| **スコープ** | 単一関数〜アプリ全体 |
+| **ネットワークアクセス** | 無（モック）〜本番API |
+| **実行環境** | JVM / ブラウザDOM / エミュレータ / 実機 |
+| **忠実度** | jsdom（疑似） → 実ブラウザ → 実デバイス |
+| **ビルド種別** | debug / release（最適化） |
+| **実行契機** | 全コミット → pre-merge → post-merge → pre-release |
+
+---
+
+## 関連ページ
+
+- [1. Artifact Matrix](?path=/docs/test-strategy-1-artifact-matrix--docs) — 成果物 × 検証マトリクス（§7連携）
+- [2. Unit層](?path=/docs/test-strategy-10-unit--docs) — 定義/採用理由/実例
+- [3. Component層](?path=/docs/test-strategy-11-component--docs) — CT/browser比較 + visual baseline
+- [4. Functional/Application層](?path=/docs/test-strategy-12-functional-application--docs) — Playwright E2E
+- [5. Release Candidate層](?path=/docs/test-strategy-13-release-candidate--docs) — Maestro/Appium比較
+- [90. ツール比較サマリ](?path=/docs/test-strategy-90-tool-comparison--docs) — 全層の採用理由
