@@ -1,5 +1,15 @@
 [
   {
+    "id": "bnd:openapi:item:name:normal",
+    "source": "openapi",
+    "kind": "boundary",
+    "group": "item",
+    "field": "name",
+    "value": "Sample Item",
+    "expectValid": true,
+    "label": "normal"
+  },
+  {
     "id": "bnd:openapi:item:name:minLength-1",
     "source": "openapi",
     "kind": "boundary",
@@ -48,6 +58,16 @@
     "value": "__ABSENT__",
     "expectValid": false,
     "label": "required-absent"
+  },
+  {
+    "id": "bnd:openapi:item:price:normal",
+    "source": "openapi",
+    "kind": "boundary",
+    "group": "item",
+    "field": "price",
+    "value": 1200,
+    "expectValid": true,
+    "label": "normal"
   },
   {
     "id": "bnd:openapi:item:price:minimum-1",
@@ -100,6 +120,16 @@
     "label": "required-absent"
   },
   {
+    "id": "bnd:openapi:item:category:normal",
+    "source": "openapi",
+    "kind": "boundary",
+    "group": "item",
+    "field": "category",
+    "value": "food",
+    "expectValid": true,
+    "label": "normal"
+  },
+  {
     "id": "bnd:openapi:item:category:enum:food",
     "source": "openapi",
     "kind": "boundary",
@@ -150,6 +180,16 @@
     "label": "required-absent"
   },
   {
+    "id": "bnd:openapi:item:code:normal",
+    "source": "openapi",
+    "kind": "boundary",
+    "group": "item",
+    "field": "code",
+    "value": "ABCD1234",
+    "expectValid": true,
+    "label": "normal"
+  },
+  {
     "id": "bnd:openapi:item:code:pattern:valid",
     "source": "openapi",
     "kind": "boundary",
@@ -178,6 +218,16 @@
     "value": "__ABSENT__",
     "expectValid": false,
     "label": "required-absent"
+  },
+  {
+    "id": "bnd:openapi:login:username:normal",
+    "source": "openapi",
+    "kind": "boundary",
+    "group": "login",
+    "field": "username",
+    "value": "demo",
+    "expectValid": true,
+    "label": "normal"
   },
   {
     "id": "bnd:openapi:login:username:minLength-1",
@@ -230,6 +280,16 @@
     "label": "required-absent"
   },
   {
+    "id": "bnd:openapi:login:password:normal",
+    "source": "openapi",
+    "kind": "boundary",
+    "group": "login",
+    "field": "password",
+    "value": "password1",
+    "expectValid": true,
+    "label": "normal"
+  },
+  {
     "id": "bnd:openapi:login:password:minLength-1",
     "source": "openapi",
     "kind": "boundary",
@@ -278,6 +338,16 @@
     "value": "__ABSENT__",
     "expectValid": false,
     "label": "required-absent"
+  },
+  {
+    "id": "bnd:field-spec:item:name:normal",
+    "source": "field-spec",
+    "kind": "boundary",
+    "group": "item",
+    "field": "name",
+    "value": "Sample",
+    "expectValid": true,
+    "label": "normal"
   },
   {
     "id": "bnd:field-spec:item:name:minLength-1",
@@ -330,6 +400,16 @@
     "label": "required-absent"
   },
   {
+    "id": "bnd:field-spec:item:price:normal",
+    "source": "field-spec",
+    "kind": "boundary",
+    "group": "item",
+    "field": "price",
+    "value": 1200,
+    "expectValid": true,
+    "label": "normal"
+  },
+  {
     "id": "bnd:field-spec:item:price:minimum-1",
     "source": "field-spec",
     "kind": "boundary",
@@ -378,6 +458,16 @@
     "value": "__ABSENT__",
     "expectValid": false,
     "label": "required-absent"
+  },
+  {
+    "id": "bnd:field-spec:item:category:normal",
+    "source": "field-spec",
+    "kind": "boundary",
+    "group": "item",
+    "field": "category",
+    "value": "food",
+    "expectValid": true,
+    "label": "normal"
   },
   {
     "id": "bnd:field-spec:item:category:enum:food",
@@ -430,6 +520,16 @@
     "label": "required-absent"
   },
   {
+    "id": "bnd:field-spec:item:code:normal",
+    "source": "field-spec",
+    "kind": "boundary",
+    "group": "item",
+    "field": "code",
+    "value": "ABCD1234",
+    "expectValid": true,
+    "label": "normal"
+  },
+  {
     "id": "bnd:field-spec:item:code:pattern:valid",
     "source": "field-spec",
     "kind": "boundary",
@@ -458,6 +558,16 @@
     "value": "__ABSENT__",
     "expectValid": false,
     "label": "required-absent"
+  },
+  {
+    "id": "bnd:field-spec:login:username:normal",
+    "source": "field-spec",
+    "kind": "boundary",
+    "group": "login",
+    "field": "username",
+    "value": "demo",
+    "expectValid": true,
+    "label": "normal"
   },
   {
     "id": "bnd:field-spec:login:username:minLength-1",
@@ -508,6 +618,16 @@
     "value": "__ABSENT__",
     "expectValid": false,
     "label": "required-absent"
+  },
+  {
+    "id": "bnd:field-spec:login:password:normal",
+    "source": "field-spec",
+    "kind": "boundary",
+    "group": "login",
+    "field": "password",
+    "value": "password1",
+    "expectValid": true,
+    "label": "normal"
   },
   {
     "id": "bnd:field-spec:login:password:minLength-1",

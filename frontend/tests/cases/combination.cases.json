@@ -1,0 +1,124 @@
+[
+  {
+    "id": "cmb:item:001",
+    "group": "item",
+    "kind": "combination",
+    "payload": {
+      "name": "Sample Item",
+      "price": 1200,
+      "category": "food",
+      "code": "ABCD1234"
+    },
+    "expectValid": true,
+    "label": "all-valid"
+  },
+  {
+    "id": "cmb:item:002",
+    "group": "item",
+    "kind": "combination",
+    "payload": {
+      "name": "Sample Item",
+      "price": -1,
+      "category": "__invalid_enum__",
+      "code": "!!"
+    },
+    "expectValid": false,
+    "label": "invalid:price"
+  },
+  {
+    "id": "cmb:item:003",
+    "group": "item",
+    "kind": "combination",
+    "payload": {
+      "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "price": 1200,
+      "category": "__invalid_enum__",
+      "code": "ABCD1234"
+    },
+    "expectValid": false,
+    "label": "invalid:name"
+  },
+  {
+    "id": "cmb:item:004",
+    "group": "item",
+    "kind": "combination",
+    "payload": {
+      "name": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+      "price": -1,
+      "category": "food",
+      "code": "!!"
+    },
+    "expectValid": false,
+    "label": "invalid:name"
+  },
+  {
+    "id": "cmb:item:005",
+    "group": "item",
+    "kind": "combination",
+    "payload": {
+      "name": "Sample Item",
+      "price": 1200,
+      "category": "food",
+      "code": "!!"
+    },
+    "expectValid": false,
+    "label": "invalid:code"
+  },
+  {
+    "id": "cmb:item:006",
+    "group": "item",
+    "kind": "combination",
+    "payload": {
+      "name": "Sample Item",
+      "price": -1,
+      "category": "food",
+      "code": "ABCD1234"
+    },
+    "expectValid": false,
+    "label": "invalid:price"
+  },
+  {
+    "id": "cmb:login:001",
+    "group": "login",
+    "kind": "combination",
+    "payload": {
+      "username": "demo",
+      "password": "password1"
+    },
+    "expectValid": true,
+    "label": "all-valid"
+  },
+  {
+    "id": "cmb:login:002",
+    "group": "login",
+    "kind": "combination",
+    "payload": {
+      "username": "demo",
+      "password": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "expectValid": false,
+    "label": "invalid:password"
+  },
+  {
+    "id": "cmb:login:003",
+    "group": "login",
+    "kind": "combination",
+    "payload": {
+      "username": "aaaaaaaaaaaaaaaaaaaaa",
+      "password": "password1"
+    },
+    "expectValid": false,
+    "label": "invalid:username"
+  },
+  {
+    "id": "cmb:login:004",
+    "group": "login",
+    "kind": "combination",
+    "payload": {
+      "username": "aaaaaaaaaaaaaaaaaaaaa",
+      "password": "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+    },
+    "expectValid": false,
+    "label": "invalid:username"
+  }
+]

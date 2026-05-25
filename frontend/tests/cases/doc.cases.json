@@ -48,5 +48,115 @@
     "precondition": "authenticated",
     "action": "logout",
     "expected": "unauthenticated"
+  },
+  {
+    "id": "api:listItems:401",
+    "source": "openapi-op",
+    "kind": "api-error",
+    "group": "item",
+    "description": "listItems: 未認証アクセス",
+    "precondition": "未ログイン（トークン無し）",
+    "action": "GET /items",
+    "expected": "401 Unauthorized"
+  },
+  {
+    "id": "api:createItem:401",
+    "source": "openapi-op",
+    "kind": "api-error",
+    "group": "item",
+    "description": "createItem: 未認証アクセス",
+    "precondition": "未ログイン（トークン無し）",
+    "action": "POST /items",
+    "expected": "401 Unauthorized"
+  },
+  {
+    "id": "api:createItem:422",
+    "source": "openapi-op",
+    "kind": "api-error",
+    "group": "item",
+    "description": "createItem: 不正なリクエストボディ",
+    "precondition": "バリデーション違反のbody",
+    "action": "POST /items",
+    "expected": "422 Unprocessable Entity"
+  },
+  {
+    "id": "api:getItem:401",
+    "source": "openapi-op",
+    "kind": "api-error",
+    "group": "item",
+    "description": "getItem: 未認証アクセス",
+    "precondition": "未ログイン（トークン無し）",
+    "action": "GET /items/{id}",
+    "expected": "401 Unauthorized"
+  },
+  {
+    "id": "api:getItem:404",
+    "source": "openapi-op",
+    "kind": "api-error",
+    "group": "item",
+    "description": "getItem: 不明なIDを指定",
+    "precondition": "存在しない id",
+    "action": "GET /items/{id}",
+    "expected": "404 Not Found"
+  },
+  {
+    "id": "api:updateItem:401",
+    "source": "openapi-op",
+    "kind": "api-error",
+    "group": "item",
+    "description": "updateItem: 未認証アクセス",
+    "precondition": "未ログイン（トークン無し）",
+    "action": "PUT /items/{id}",
+    "expected": "401 Unauthorized"
+  },
+  {
+    "id": "api:updateItem:404",
+    "source": "openapi-op",
+    "kind": "api-error",
+    "group": "item",
+    "description": "updateItem: 不明なIDを指定",
+    "precondition": "存在しない id",
+    "action": "PUT /items/{id}",
+    "expected": "404 Not Found"
+  },
+  {
+    "id": "api:updateItem:422",
+    "source": "openapi-op",
+    "kind": "api-error",
+    "group": "item",
+    "description": "updateItem: 不正なリクエストボディ",
+    "precondition": "バリデーション違反のbody",
+    "action": "PUT /items/{id}",
+    "expected": "422 Unprocessable Entity"
+  },
+  {
+    "id": "api:deleteItem:401",
+    "source": "openapi-op",
+    "kind": "api-error",
+    "group": "item",
+    "description": "deleteItem: 未認証アクセス",
+    "precondition": "未ログイン（トークン無し）",
+    "action": "DELETE /items/{id}",
+    "expected": "401 Unauthorized"
+  },
+  {
+    "id": "api:deleteItem:404",
+    "source": "openapi-op",
+    "kind": "api-error",
+    "group": "item",
+    "description": "deleteItem: 不明なIDを指定",
+    "precondition": "存在しない id",
+    "action": "DELETE /items/{id}",
+    "expected": "404 Not Found"
+  },
+  {
+    "id": "api:searchItems:401",
+    "source": "openapi-op",
+    "kind": "api-error",
+    "group": "item",
+    "description": "searchItems: 未認証アクセス",
+    "precondition": "未ログイン（トークン無し）",
+    "action": "GET /search",
+    "expected": "401 Unauthorized"
   }
 ]

@@ -5,7 +5,12 @@ export function deriveBoundaryCases(c: FieldConstraint): BoundaryCase[] {
   const cases: BoundaryCase[] = []
 
   if (c.example !== undefined && c.example !== '') {
-    cases.push({ value: c.example, expectValid: true, label: 'normal' })
+    let exampleValue: unknown = c.example
+    if ((c.type === 'integer' || c.type === 'number') && typeof c.example === 'string') {
+      const n = Number(c.example)
+      if (!isNaN(n)) exampleValue = n
+    }
+    cases.push({ value: exampleValue, expectValid: true, label: 'normal' })
   }
 
   if (c.type === 'integer' || c.type === 'number') {
