@@ -11,6 +11,7 @@ export interface FieldConstraint {
   maxLength?: number
   enumValues?: string[]
   pattern?: string
+  format?: string
   example: string | number // 妥当な代表値（pattern/enum検証の有効例にも使う）
 }
 
@@ -33,10 +34,19 @@ export interface CaseRecord {
   label: string
 }
 
+export interface CombinationCase {
+  id: string                        // 'cmb:<group>:<nnn>'
+  group: string
+  kind: 'combination'
+  payload: Record<string, unknown>  // 全項目のフルレコード
+  expectValid: boolean              // 全項目が有効なときのみ true
+  label: string                     // 'all-valid' | 'invalid:<field>'
+}
+
 export interface DocItem {
   id: string
-  source: 'event-spec' | 'store-spec'
-  kind: 'operation' | 'state'
+  source: 'event-spec' | 'store-spec' | 'openapi-op'
+  kind: 'operation' | 'state' | 'api-error'
   group: string
   description: string
   precondition: string
