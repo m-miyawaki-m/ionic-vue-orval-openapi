@@ -1,0 +1,27 @@
+@startuml sequence-scan-ocr
+title シーケンス: スキャン / カメラOCR (抽象アダプタ)
+
+actor User
+participant ScanPage
+participant "useScanner / useOcr" as Comp
+participant "ScannerAdapter / OcrAdapter" as Adapter
+note over Adapter : 本PoCは fake。実機は HID/SDK/BT / OCRエンジン
+
+User -> ScanPage : スキャン起動 (scan-scanner)
+ScanPage -> Comp : scan()  /  recognize(image?)
+Comp -> Comp : scanning/recognizing = true
+Comp -> Adapter : adapter.scan() / adapter.recognize()
+alt 成功
+  Adapter --> Comp : { code, format } / { text }
+  Comp -> Comp : lastCode/lastText 更新; flag=false
+  Comp --> ScanPage : scan-result 表示 → コード検索/項目入力補助へ
+else 失敗 (例外)
+  Adapter --> Comp : throw
+  Comp -> Comp : error = e; flag=false
+  Comp --> ScanPage : 失敗表示
+end
+note right of Comp
+  実読取・認識精度は自動化スコープ外 (手動+エビデンス)。
+  テストは fake 注入で結果/失敗を再現。
+end note
+@enduml

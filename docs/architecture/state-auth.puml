@@ -1,0 +1,12 @@
+@startuml state-auth
+title 状態遷移: 認証 (useAuthStore)
+
+[*] --> 未認証 : token = null
+未認証 --> 認証済み : login() 成功\n(token = res.token)
+認証済み --> 未認証 : logout()\n(token = null)
+認証済み --> 未認証 : リロード\n(非永続)
+
+未認証 : isAuthenticated = false
+未認証 : 保護画面アクセス → /login
+認証済み : isAuthenticated = true
+@enduml

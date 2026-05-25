@@ -1,0 +1,33 @@
+@startuml sequence-login
+title シーケンス: ログイン
+
+actor User
+participant LoginPage
+participant "loginSchema (zod)" as ZOD
+participant "useAuthStore" as Store
+participant "login() (api/auth)" as API
+participant "MSW /auth/login" as MSW
+participant Router
+
+User -> LoginPage : username/password 入力, Sign in
+LoginPage -> ZOD : safeParse({username,password})
+alt 入力不正
+  ZOD --> LoginPage : !success
+  LoginPage --> User : error = "Invalid input"
+else 正常
+  ZOD --> LoginPage : success
+  LoginPage -> Store : login(username,password)
+  Store -> API : login({username,password})
+  API -> MSW : POST /api/auth/login
+  MSW --> API : { token }
+  API --> Store : res.token
+  Store -> Store : token = res.token
+  alt 失敗(throw)
+    Store --> LoginPage : error
+    LoginPage --> User : error = "Login failed"
+  else 成功
+    LoginPage -> Router : replace('/tabs/tab1')
+    Router --> User : Items 一覧
+  end
+end
+@enduml

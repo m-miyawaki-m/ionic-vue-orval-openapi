@@ -1,0 +1,32 @@
+@startuml screen-transition
+title 画面遷移図
+
+[*] --> Login : 未認証 (guard)
+[*] --> Items : 認証済み (/ → /tabs/tab1)
+
+Login --> Items : Sign in 成功
+
+state "タブシェル (/tabs)" as Tabs {
+  Items : /tabs/tab1
+  Search : /tabs/tab2
+  Settings : /tabs/tab3
+  Items --> Search : Tab2
+  Search --> Settings : Tab3
+  Settings --> Items : Tab1
+}
+
+Items --> ItemDetail : 行タップ (select)
+ItemDetail --> ItemEdit : 編集
+Items --> ItemNew : New
+ItemNew --> Items : 保存 (replace /tabs/tab1)
+ItemEdit --> Items : 更新
+ItemDetail --> Items : 戻る
+
+Search --> Scan : search-scan
+Scan --> Search : 読取結果 → 検索
+
+note bottom
+  guard: /tabs* /items* /scan* は未認証で /login へ。
+  トークン非永続 (リロードで Login)。
+end note
+@enduml

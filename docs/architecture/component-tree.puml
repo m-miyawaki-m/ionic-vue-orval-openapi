@@ -1,0 +1,22 @@
+@startuml component-tree
+title コンポーネントツリー（主要）
+
+[App.vue] --> [router-view]
+[router-view] --> [LoginPage]
+[router-view] --> [TabsPage]
+[router-view] --> [ItemDetailPage]
+[router-view] --> [ItemFormPage]
+[router-view] --> [ScanPage]
+
+[TabsPage] --> [TabItemsPage] : tab1
+[TabsPage] --> [TabSearchPage] : tab2
+[TabsPage] --> [TabSettingsPage] : tab3
+
+[TabItemsPage] --> [ItemListItem] : v-for (props item, @select)
+[TabSearchPage] --> [ItemListItem] : 検索結果
+
+note right of [ItemListItem]
+  再利用部品。props: item:Item / emits: select(id)
+  L2(Component)・L3(visual)・Storybook の対象
+end note
+@enduml
