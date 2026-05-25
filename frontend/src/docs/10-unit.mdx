@@ -1,0 +1,35 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Test Strategy/2. Unit層" />
+
+# Unit層（ロジック単体・境界値）
+
+- スコープ/契機: 単一関数/クラス・ネット無・ローカル(jsdom)・全コミット
+- 採用: **Vitest**（+ `gen:cases` の境界値データ駆動）
+
+## 比較と採用理由
+
+| 候補 | 導入 | 速度 | Vite/ESM/TS統合 | エコシステム | コスト | 評価 |
+|---|---|---|---|---|---|---|
+| **Vitest**（採用） | ◎ | ◎ | ◎ | ◎ | 無料 | Vite前提の本構成に最適 |
+| Jest | ○ | △ | △(別トランスパイル) | ◎ | 無料 | 標準だがVite統合で不利 |
+| Mocha + Chai/Sinon | ○ | ○ | △ | ○ | 無料 | 部品を寄せ集める手間 |
+| node:test | ○ | ○ | △ | △ | 無料 | 周辺(モック/jsdom/cov)が薄い |
+| AVA / uvu | ○ | ◎ | △ | △ | 無料 | 高速・最小だがニッチ |
+| Jasmine | ○ | ○ | △ | ○ | 無料 | 古くESM/Vite弱 |
+
+候補ごとの判断:
+
+- **Vitest（採用）**: Viteと同一トランスフォーム経路でビルド設定を二重化せず、ESM/TSがネイティブ。`test.each` のデータ駆動が `gen:cases` の境界値JSONと噛み合う。jsdom環境で composable/store/zod を高速に回せ、watchも速い。Jest互換APIで学習資産も流用できる。
+- **Jest（不採用）**: 巨大エコシステムが魅力だが、Viteプロジェクトでは babel-jest/ts-jest/SWC など別トランスパイルとESM設定の摩擦が生じ、設定面が二重化し遅い。本構成での上積みが無い。
+- **Mocha + Chai/Sinon（不採用）**: 柔軟だがランナー＋アサート＋モック＋カバレッジを個別に組む手間。watch/Vite統合も弱い。
+- **node:test（不採用）**: 依存ゼロで前進中だが、モック/jsdom/カバレッジ等の周辺が薄く、Vite統合も無い。
+- **AVA / uvu（不採用）**: 高速・最小主義だがエコシステムが小さく、Vue/jsdom周りのツールが乏しい。
+- **Jasmine（不採用）**: アサーション同梱だがDXが古く、ESM/Viteとの相性が弱い。
+
+## 動かす
+
+```sh
+npm run test:unit      # tests/unit + tests/cases（境界値）
+npm run gen:cases      # 設計ソース → cases.json 再生成
+```
