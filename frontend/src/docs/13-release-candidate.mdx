@@ -1,0 +1,47 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+import itemsShot from './assets/items.png'
+
+<Meta title="Test Strategy/5. Release Candidate (Android)" />
+
+# Release Candidate層（Android実機スモーク・手動/環境依存）
+
+- スコープ/契機: リリースビルド・実機・pre-release・重要ジャーニー
+- 採用: **Maestro**（スモーク）＋ **Appium**（DOM精密）の動く比較
+
+## 比較と採用理由
+
+| 候補 | 導入 | WebView(Capacitor)対応 | 記述量 | 安定性 | CI親和性 | 証跡 | コスト | 評価 |
+|---|---|---|---|---|---|---|---|---|
+| **Maestro**（スモーク） | ◎ | ○(テキスト基準) | ◎(YAML) | ○ | ○(Cloud有料/ローカル無料) | ◎ | 無料 | 起動スモーク+スクショに最適 |
+| **Appium**(+WDIO) | △ | ◎(WEBVIEW切替でDOM操作) | △(コード) | △(driver整合) | ◎ | ○ | 無料 | 厳密DOM操作/CI統合向き |
+| Robolectric | – | ✕(JVM/ネイティブビュー) | – | – | – | – | 無料 | Web DOM対象外(層対応の注記のみ) |
+| Espresso | – | ✕(ネイティブ専用) | – | – | – | – | 無料 | WebViewに不向き→除外 |
+| UIAutomator | – | △(粗い) | – | – | – | – | 無料 | Appium(UiAutomator2)が内包 |
+| Detox | – | ✕(React Native向け) | – | – | – | – | 無料 | スタック不一致→除外 |
+| Calabash | – | – | – | – | – | – | – | 非推奨/メンテ終了→除外 |
+
+候補ごとの判断:
+
+- **Maestro（採用・スモーク）**: 単一バイナリ＋宣言的YAML、待機/リトライ内蔵、スクショ容易。Capacitor WebViewにはテキスト基準マッチが効く。Cloudは有料だがローカルは無料。
+- **Appium（採用・DOM精密）**: W3C/UiAutomator2でWEBVIEWコンテキストに切替えCSS/data-testid操作が可能、CI統合に強い。コスト: サーバ＋driver＋chromedriverのバージョン整合。
+- **Robolectric（不採用＝注記）**: Android公式のローカルComponentランナーだがJVM/ネイティブビュー前提。我々のComponent層はWeb DOMで既にPlaywright CT/Vitest browserが担う。Android概念対応の注記としてのみ載せる。
+- **Espresso（除外）**: ネイティブAndroidのインプロセスUIテストで、CapacitorのWebView DOM向けでない。
+- **UIAutomator（不採用）**: クロスアプリのネイティブ自動化でWebView DOMには粗い。AppiumのUiAutomator2 driverが有用部分を内包。
+- **Detox（除外）**: React Native向けグレーボックスE2Eでスタック不一致。
+- **Calabash（除外）**: 非推奨・メンテ終了。
+- 共通制約: 本番ビルドにMSW無し → MSW-in-build か backend が前提（§1注記）。
+
+## 動かす（手動・要エミュレータ/実機）
+
+```sh
+npm run test:android:maestro
+npm run test:android:appium
+```
+
+手順とデータ依存（MSW-in-build要）は `frontend/android-tests/README.md` を参照。
+
+## 画面イメージ（暫定）
+
+<img src={itemsShot} alt="WebView preview (web render). Real emulator/device shot to be captured on hardware." width={320} />
+
+> 注: 上は Web レンダリングの代用。実機/エミュレータのスクショはハードウェア上で取得・差し替え予定。
