@@ -7,5 +7,11 @@ export default defineConfig({
     environment: 'jsdom',
     setupFiles: ['./test-setup.ts'],
     include: ['tests/unit/**/*.spec.ts', 'tests/cases/**/*.spec.ts'],
+    // Standalone result artifacts (Storybook-independent). Dir is gitignored.
+    reporters: ['default', 'junit', 'json'],
+    outputFile: {
+      junit: './vitest-results/unit-junit.xml',
+      json: './vitest-results/unit-results.json',
+    },
   },
 })

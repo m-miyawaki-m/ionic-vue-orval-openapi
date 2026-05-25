@@ -33,6 +33,10 @@ npm-debug.log*
 
 # Playwright component-test build cache (report/results dirs ignored at repo root)
 /playwright/.cache
+# Playwright CT standalone HTML report
+/playwright-ct-report
+# Vitest standalone result files (separate dir so Playwright's test-results clean doesn't wipe them)
+/vitest-results
 
 # L5 Android smoke screenshots (runtime evidence; pasted into evidence Excel manually)
 /android-tests/screenshots

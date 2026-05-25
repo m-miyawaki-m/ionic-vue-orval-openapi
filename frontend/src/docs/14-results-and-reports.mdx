@@ -10,9 +10,9 @@ import { Meta } from '@storybook/addon-docs/blocks'
 
 | 層 | コマンド | 結果の保存先 | 確認方法 |
 |---|---|---|---|
-| L1 Unit | `npm run test:unit` | ターミナル出力のみ | コンソール（各テスト名は `npm run test:unit -- --reporter=verbose`） |
-| L2 Component 挙動（Playwright CT） | `npm run test:ct` | ターミナル出力のみ | コンソール（`-- --reporter=list`） |
-| L2 Component 挙動（Vitest browser） | `npm run test:browser` | ターミナル出力のみ | コンソール（`-- --reporter=verbose`） |
+| L1 Unit | `npm run test:unit` | **ファイル** `frontend/vitest-results/unit-junit.xml` + `unit-results.json`（＋ターミナル） | ファイルを開く／CI・P5で取込（各テスト名は `-- --reporter=verbose`） |
+| L2 Component 挙動（Playwright CT） | `npm run test:ct` | **HTMLレポート** `frontend/playwright-ct-report/` | `npx playwright show-report playwright-ct-report` |
+| L2 Component 挙動（Vitest browser） | `npm run test:browser` | **ファイル** `frontend/vitest-results/browser-junit.xml` + `browser-results.json` | ファイルを開く／CI・P5で取込 |
 | L3 Visual（ビジュアル回帰） | `npm run test:visual` | **HTMLレポート** `frontend/playwright-report/`<br />基準画像 `frontend/tests/visual/visual.spec.ts-snapshots/*.png`<br />失敗時の実際/差分 `frontend/test-results/` | `npx playwright show-report` → http://localhost:9323 |
 | L4 Functional/Application（E2E） | `npm run test:e2e` | **HTMLレポート** `frontend/playwright-report/` | `npx playwright show-report` → http://localhost:9323 |
 | L5 Release Candidate（Android） | `npm run test:android:maestro` / `:appium` | 手動・スクショ（環境依存） | `frontend/android-tests/` の手順、実機エビデンス（スクショ） |
@@ -31,10 +31,11 @@ npx playwright show-report   # http://localhost:9323 をブラウザで開く
 
 ## 注意
 
-- `playwright-report/` と `test-results/` は **gitignore**（ローカル成果物・コミットしない）。
-- HTMLレポートは `playwright test` 実行のたびに**上書き**される（e2e と visual は同一 `playwright-report/`）。`--reporter=list` 等で reporter を上書きして実行した場合は HTML は生成されない。
+- すべての出力先（`playwright-report/`・`test-results/`・`vitest-results/`・`playwright-ct-report/`）は **gitignore**（ローカル成果物・コミットしない）。**いずれも Storybook 非依存**で、`npm run test:*` を叩くだけで生成される。
+- **Vitest と Playwright で出力先を分けている**: Playwright は `test-results/` を実行ごとに**クリーン**するため、Vitest(unit/browser) の JUnit/JSON は別ディレクトリ `vitest-results/` に出す（同居させると消える）。
+- Playwright の HTMLレポートは実行のたびに**上書き**（e2e/visual は `playwright-report/`、CT は `playwright-ct-report/`）。素の `npm run test:e2e`/`test:visual`/`test:ct` で生成され、`--reporter=list` 等で上書き実行すると HTML は出ない。
 - **Visual の基準画像は git 管理**（`tests/visual/visual.spec.ts-snapshots/`）で **OS/レンダラ依存**。別環境では再生成が必要。
-- CT / Unit / browser を**永続レポート化**したい場合: Vitest に `@vitest/ui` か JUnit/JSON レポーター、CT（`playwright-ct.config.ts`）に html reporter を追加（現状は未設定＝ターミナルのみ）。
+- さらにインタラクティブな HTML ダッシュボードが欲しい場合は `@vitest/ui`（devDep）を追加して `vitest --ui`。
 
 ## 将来: 統合エビデンス（P5）
 

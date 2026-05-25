@@ -11,5 +11,11 @@ export default defineConfig({
       provider: 'playwright',
       headless: true,
     },
+    // Standalone result artifacts (Storybook-independent). Dir is gitignored.
+    reporters: ['default', 'junit', 'json'],
+    outputFile: {
+      junit: './vitest-results/browser-junit.xml',
+      json: './vitest-results/browser-results.json',
+    },
   },
 })

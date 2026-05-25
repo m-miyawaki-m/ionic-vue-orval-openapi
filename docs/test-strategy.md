@@ -37,9 +37,12 @@ npm run build                # 本番ビルド
 各テストの結果の保存先と確認方法は Storybook の **Test Strategy / 6. 結果の確認・レポート保存先**
 （`frontend/src/docs/14-results-and-reports.mdx`）にまとめる。要点:
 
+いずれも Storybook 非依存。`npm run test:*` を叩くだけで生成される。
+
 - **e2e / visual**: HTMLレポート `frontend/playwright-report/` → `npx playwright show-report`（http://localhost:9323）
-- **CT / unit / browser**: ターミナル出力のみ（`-- --reporter=verbose|list` で詳細）
-- `playwright-report` / `test-results` は gitignore。visual基準画像は `tests/visual/*-snapshots/`（git管理）
+- **CT**: HTMLレポート `frontend/playwright-ct-report/` → `npx playwright show-report playwright-ct-report`
+- **unit / browser**: JUnit XML + JSON を `frontend/vitest-results/`（Playwrightが `test-results/` をクリーンするため別ディレクトリ）
+- 出力先 `playwright-report`/`playwright-ct-report`/`test-results`/`vitest-results` は gitignore。visual基準画像は `tests/visual/*-snapshots/`（git管理）
 
 詳細な層定義・ツール比較・採用理由は Storybook の Test Strategy を参照。
 設計の根拠は `docs/superpowers/specs/2026-05-25-test-strategy-rework-android-catalog-design.md`。
