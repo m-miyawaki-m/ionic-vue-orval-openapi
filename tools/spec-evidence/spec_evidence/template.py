@@ -12,11 +12,22 @@ from openpyxl.utils import get_column_letter
 from openpyxl.worksheet.datavalidation import DataValidation
 
 CATEGORY_COLUMNS = [
-    "No.", "区分", "テスト項目", "確認手順", "期待結果",
+    "No.", "区分", "テスト項目", "確認手順", "利用データNo.", "期待結果",
     "結果(OK/NG)", "NG時の内容・備考", "エビデンスNo.", "実施日",
 ]
 RESULT_CHOICES = '"OK,NG,-,保留"'
 DEFAULT_CATEGORIES = ["画面表示", "ボタン操作", "API連携", "権限・認証"]
+
+DATA_COLUMNS = ["利用データNo.", "区分", "内容", "値・例", "備考"]
+DEFAULT_DATA_SETS = [
+    ("DT-001", "認証アカウント", "ログイン用モックアカウント", "demo / password1（非永続トークン）", ""),
+    ("DT-002", "固定フィクスチャ", "Items一覧/詳細の MSW 固定データ",
+     "Coffee(drink/¥350) / Sandwich(food/¥480) / Notebook(other/¥220)", ""),
+    ("DT-003", "境界値データ", "gen-cases 生成の境界値",
+     "tests/cases/*.cases.json（各値は各行の確認手順に記載）", ""),
+    ("DT-004", "環境", "実行環境/モック",
+     "DEV=MSW固定（本番ビルドはMSW無し→MSW-in-build/backend要）", ""),
+]
 
 _HEADER_FILL = PatternFill("solid", fgColor="D9E1F2")
 _TITLE_FONT = Font(bold=True, size=14)
@@ -75,24 +86,8 @@ def _build_cover(ws, meta):
     ws.cell(30, 2, meta.get("version", "v1.0"))
     ws.cell(30, 3, meta.get("issued", ""))
     ws.cell(30, 4, "新規作成")
-
-    # 利用データ（テストデータ）— what data/accounts/env each test uses
-    _label(ws, "B32", "利用データ（テストデータ）")
-    td = meta.get("test_data", {})
-    data_rows = [
-        ("テストアカウント", td.get("account", "demo / password1（モック認証・非永続トークン）")),
-        ("環境/モック", td.get("env", "DEV=MSW固定データ（本番ビルドはMSW無し→実機はMSW-in-build/backend要）")),
-        ("固定フィクスチャ(Items)", td.get("fixtures", "Coffee(drink/¥350) / Sandwich(food/¥480) / Notebook(other/¥220)")),
-        ("境界値データ", td.get("boundary", "gen-cases 生成（OpenAPI＋画面項目CSV由来, tests/cases/*.cases.json）")),
-        ("入力値の所在", td.get("note", "各テスト項目の具体的な入力値は各カテゴリシートの「テスト項目／確認手順」列に記載")),
-    ]
-    for i, (k, v) in enumerate(data_rows, start=33):
-        _label(ws, f"B{i}", k)
-        ws[f"C{i}"] = v
-        ws[f"C{i}"].alignment = _WRAP
-
-    ws.column_dimensions["B"].width = 20
-    ws.column_dimensions["C"].width = 56
+    ws.column_dimensions["B"].width = 18
+    ws.column_dimensions["C"].width = 40
     for col in "DEF":
         ws.column_dimensions[col].width = 16
 
@@ -128,7 +123,7 @@ def _build_category(ws, category, rows, meta):
     dv = DataValidation(type="list", formula1=RESULT_CHOICES, allow_blank=True)
     ws.add_data_validation(dv)
     dv.add(f"{result_col}{first}:{result_col}{last}")
-    widths = {"A": 8, "B": 14, "C": 34, "D": 34, "E": 30, "F": 12, "G": 24, "H": 14, "I": 16}
+    widths = {"A": 8, "B": 14, "C": 32, "D": 32, "E": 14, "F": 28, "G": 12, "H": 24, "I": 14, "J": 16}
     for col, w in widths.items():
         ws.column_dimensions[col].width = w
 
@@ -162,6 +157,29 @@ def _build_evidence(ws, blocks):
         ws.column_dimensions[col].width = 14
 
 
+def _build_data(ws, data_sets, empty_rows=6):
+    ws["B2"] = "利用データ（テストデータ）一覧"
+    ws["B2"].font = _TITLE_FONT
+    ws["B3"] = "テストごとに利用データが異なる場合はここに定義し、各カテゴリ行の「利用データNo.」から参照する。"
+    # header row 5
+    for j, h in enumerate(DATA_COLUMNS, start=2):  # start at col B
+        c = ws.cell(5, j, h)
+        c.font = _BOLD
+        c.fill = _HEADER_FILL
+        c.border = _BORDER
+        c.alignment = _WRAP
+    # pre-filled defaults + empty rows for additions
+    rows = list(data_sets) + [("", "", "", "", "")] * empty_rows
+    for i, rec in enumerate(rows, start=6):
+        for j, val in enumerate(rec, start=2):
+            cell = ws.cell(i, j, val if val != "" else None)
+            cell.border = _BORDER
+            cell.alignment = _WRAP
+    widths = {"B": 14, "C": 16, "D": 30, "E": 52, "F": 20}
+    for col, w in widths.items():
+        ws.column_dimensions[col].width = w
+
+
 def write_template(path, categories=None, rows=12, evidence_blocks=6, meta=None):
     """Write an empty IT確認書 template workbook to `path`."""
     categories = categories or DEFAULT_CATEGORIES
@@ -172,5 +190,10 @@ def write_template(path, categories=None, rows=12, evidence_blocks=6, meta=None)
         ws = wb.create_sheet(f"{i:02d}_{cat}")
         _build_category(ws, cat, rows, meta)
     _build_evidence(wb.create_sheet(f"{len(categories) + 2:02d}_エビデンス"), evidence_blocks)
+    _build_data(
+        wb.create_sheet(f"{len(categories) + 3:02d}_利用データ"),
+        meta.get("data_sets") or DEFAULT_DATA_SETS,
+        empty_rows=max(2, rows // 2),
+    )
     wb.save(path)
     return [ws.title for ws in wb.worksheets]
