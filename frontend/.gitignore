@@ -36,3 +36,6 @@ npm-debug.log*
 
 # L5 Android smoke screenshots (runtime evidence; pasted into evidence Excel manually)
 /android-tests/screenshots
+
+*storybook.log
+storybook-static

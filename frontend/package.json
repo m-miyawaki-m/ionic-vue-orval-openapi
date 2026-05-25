@@ -17,7 +17,9 @@
     "lint": "eslint .",
     "lint:openapi": "redocly lint ../openapi/openapi.yaml",
     "gen": "orval --config ./orval.config.ts",
-    "gen:cases": "tsx scripts/gen-cases/cli.ts"
+    "gen:cases": "tsx scripts/gen-cases/cli.ts",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "dependencies": {
     "@capacitor/android": "5.7.8",
@@ -41,6 +43,8 @@
     "@playwright/experimental-ct-vue": "^1.60.0",
     "@playwright/test": "^1.48.0",
     "@redocly/cli": "^1.34.0",
+    "@storybook/addon-docs": "^10.4.1",
+    "@storybook/vue3-vite": "^10.4.1",
     "@types/js-yaml": "^4.0.9",
     "@vitejs/plugin-vue": "^4.0.0",
     "@vitest/browser": "^0.34.6",
@@ -50,6 +54,8 @@
     "jsdom": "^22.1.0",
     "msw": "^2.14.4",
     "orval": "^8.9.1",
+    "playwright": "^1.60.0",
+    "storybook": "^10.4.1",
     "terser": "^5.4.0",
     "tsx": "^4.22.3",
     "typescript": "~5.9.0",
