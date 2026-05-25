@@ -1,0 +1,4 @@
+[
+  {"id":"bnd:openapi:item:name:minLength","source":"openapi","kind":"boundary","group":"item","field":"name","value":"a","expectValid":true,"label":"minLength"},
+  {"id":"bnd:openapi:item:name:minLength-1","source":"openapi","kind":"boundary","group":"item","field":"name","value":"","expectValid":false,"label":"minLength-1"}
+]

@@ -1,0 +1,4 @@
+[
+  {"id":"event-spec:item:0","source":"event-spec","kind":"operation","group":"item","description":"tapRow","precondition":"一覧表示","action":"リスト行タップ → router.push","expected":"Item詳細へ遷移"},
+  {"id":"store-spec:auth:0","source":"store-spec","kind":"state","group":"auth","description":"login","precondition":"未認証","action":"login","expected":"token保存"}
+]

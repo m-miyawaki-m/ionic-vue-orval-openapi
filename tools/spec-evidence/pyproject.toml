@@ -1,0 +1,16 @@
+[project]
+name = "spec-evidence"
+version = "0.1.0"
+description = "Generate test spec + evidence Excel from gen-cases cases.json and Vitest results (decoupled from the app)."
+requires-python = ">=3.11"
+dependencies = ["openpyxl>=3.1"]
+
+[project.scripts]
+spec-evidence = "spec_evidence.cli:main"
+
+[build-system]
+requires = ["setuptools>=61"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+packages = ["spec_evidence"]

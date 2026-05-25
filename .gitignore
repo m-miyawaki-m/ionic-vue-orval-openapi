@@ -8,5 +8,10 @@ frontend/.vitest-report/
 frontend/test-results/
 frontend/playwright-report/
 frontend/blob-report/
+frontend/vitest-results/
+frontend/playwright-ct-report/
+tools/spec-evidence/out/
+__pycache__/
+*.pyc
 *.log
 .DS_Store
