@@ -8,6 +8,7 @@ from .cases import load_cases
 from .results import load_vitest_results
 from .spec_doc import write_spec_md, write_spec_xlsx
 from .evidence import write_evidence_xlsx
+from .template import write_template
 
 # tools/spec-evidence  (this file is tools/spec-evidence/spec_evidence/cli.py)
 _TOOL_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -29,7 +30,18 @@ def main(argv=None):
         help="Vitest JSON result files (missing files are skipped).",
     )
     p.add_argument("--out-dir", default=os.path.join(_TOOL_DIR, "out"))
+    p.add_argument("--template", action="store_true",
+                   help="Write an empty IT確認書 template (it-confirmation-template.xlsx) and exit.")
+    p.add_argument("--feature", default="<記入>", help="Cover '対象機能' (template only).")
     args = p.parse_args(argv)
+
+    os.makedirs(args.out_dir, exist_ok=True)
+
+    if args.template:
+        path = os.path.join(args.out_dir, "it-confirmation-template.xlsx")
+        sheets = write_template(path, meta={"feature": args.feature})
+        print(f"Wrote IT確認書 template -> {path} (sheets: {', '.join(sheets)})")
+        return 0
 
     items = load_cases(args.boundary, args.doc)
     results = {}
