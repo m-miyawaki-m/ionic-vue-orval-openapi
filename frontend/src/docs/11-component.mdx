@@ -1,0 +1,72 @@
+import { Meta, Canvas } from '@storybook/addon-docs/blocks'
+import * as ItemListItemStories from '../components/ItemListItem.stories'
+import itemsShot from './assets/items.png'
+
+<Meta title="Test Strategy/3. Component層" />
+
+# Component層（部品の挙動＋見た目）
+
+Androidは「ボタンのスクショテスト」をComponent層に含む → 本PoCの「挙動(L2)」と「見た目(L3)」をここに統合。
+
+## 動く実例（部品をそのまま表示）
+
+<Canvas of={ItemListItemStories.Drink} />
+<Canvas of={ItemListItemStories.LongName} />
+
+## 挙動の比較（Playwright CT vs Vitest browser mode）
+
+**SPEC §3-2 Component層（挙動）— 採用: Playwright CT（主）/ Vitest browser（比較対象として併設）**
+
+| 候補 | 導入 | 忠実度(実ブラウザ) | Ionic対応 | 証跡(部品スクショ) | 安定性 | コスト | 評価 |
+|---|---|---|---|---|---|---|---|
+| **Playwright CT**（推奨/主） | △ | ◎ | ○(IonicVue登録要) | ◎(toHaveScreenshot) | ○ | 無料 | 部品単位の見た目回帰が組込み |
+| **Vitest browser mode**（併設・比較） | ○ | ◎ | ○(plugins:[IonicVue]) | ✕(0.34に部品スクショ無) | △(0.34実験的) | 無料 | L1資産流用可だが見た目証跡が弱い |
+| @vue/test-utils単体(jsdom) | ◎ | ✕(疑似DOM) | △ | ✕ | ◎ | 無料 | Web Components描画不可 |
+| @testing-library/vue(jsdom) | ◎ | ✕(疑似DOM) | △ | ✕ | ◎ | 無料 | クエリは良いが忠実度低 |
+| Cypress Component Testing | ○ | ◎ | ○ | ◎ | ○ | 無料(Cloud有料) | 第2の自動化スタックで冗長 |
+| WebdriverIO browser runner | △ | ◎ | ○ | ○ | ○ | 無料 | 設定重め(L5 Appium用に温存) |
+
+**候補ごとの判断:**
+
+- **Playwright CT（採用・主）**: 実chromiumで Ionic Web Components が実際に upgrade/描画され忠実度が高い。`expect(component).toHaveScreenshot()` で部品単位のビジュアル回帰が組込み。E2E/visualとAPI共通。コスト: experimental表記、専用Viteビルド、propsがランナー↔ブラウザ境界をまたぐためシリアライズ可能要、jsdomより重い。両ランナーとも基本描画は緑（検証済み）。
+- **Vitest browser mode（採用・併設比較）**: 実ブラウザ忠実度＋L1の `@vue/test-utils` をそのまま流用できる利点。ただし0.34は実験的で部品スクショが無い。「馴染んだAPI vs 見た目証跡の欠如」というトレードオフを**動く比較として残す**価値があり併設。
+- **@vue/test-utils単体 / @testing-library/vue（不採用＝Component層ランナーとして）**: jsdomはカスタム要素/Ionicを忠実に実行せず、実レイアウト/描画が無いためComponent層の忠実度要件を満たさない（クエリ思想は実ブラウザランナー上で活かせる）。
+- **Cypress Component Testing（不採用）**: 実ブラウザCTは可能だがCypressランタイムが重く、Cloud寄り機能を避けたい。Playwrightと別の自動化スタックを二重に持つことになり冗長。
+- **WebdriverIO browser runner（不採用）**: 強力だが設定が重い。WDIOはL5 Appium用に温存し、高速な部品テストには使わない。
+
+実行コマンド:
+
+```bash
+npm run test:ct        # Playwright CT
+npm run test:browser   # Vitest browser mode
+```
+
+## 見た目の比較（ビジュアル回帰）
+
+**SPEC §3-3 Component層（見た目）— 採用: Playwright `toHaveScreenshot`**
+
+| 候補 | 導入 | 決定性 | baseline管理 | 別スタック | コスト | 評価 |
+|---|---|---|---|---|---|---|
+| **Playwright visual**（採用） | ○ | ◎(animations:disabled+MSW) | ローカルgit | 不要(PWと同系) | 無料 | E2E/CTと一貫 |
+| jest-image-snapshot | ○ | ○ | ローカル | Jest+別駆動 | 無料 | Jestを足す羽目 |
+| BackstopJS | △ | ○ | ローカル | Puppeteer系 | 無料 | 設定重め・別スタック |
+| Loki / Lost Pixel | △ | ○ | ローカル/CI | Storybook前提 | 無料(一部cloud寄り) | 別差分サービス/CI配線増 |
+| reg-suit | △ | ○ | CI+ホスト | レポート基盤要 | 無料 | レポート保管先が必要 |
+| Chromatic / Percy / Applitools / Argos | ◎ | ◎ | クラウド | – | **有料/cloud** | コスト方針で除外 |
+
+**候補ごとの判断:**
+
+- **Playwright visual（採用）**: E2E/CTと同ツールチェーンで一貫。MSW決定的データ＋`animations:'disabled'`でブレを排除し、baselineをgitに置いて無料・ローカル完結。注意: baselineはOS/レンダラ依存（Windows+chromium生成）でCIでは当該環境で再生成が必要。
+- **jest-image-snapshot（不採用）**: 画像差分は堅実だがJest前提で、スクショ撮影に別途ブラウザ駆動が要る。この用途のためだけにJestを足すのは過剰。
+- **BackstopJS（不採用）**: 成熟だがPuppeteer/設定が重く、Playwrightと別スタックになる。
+- **Loki / Lost Pixel / reg-suit（不採用）**: Storybook連携のビジュアル回帰（Storybookとの相性は良い）だが、別の差分サービスやCI配線・レポート保管先を要し、Playwright組込みに比べ構成が増える。Lost Pixel等は無料枠はあるがcloud寄り。
+- **Chromatic / Percy / Applitools / Argos（除外）**: クラウドSaaS（多くが有料、Argosも無料枠限定）でOSS/ローカル/無料方針に反する。
+- **将来オプション**: `@storybook/test-runner`+Playwrightでstoryをスナップショット化（見た目をカタログに紐付け）できる→将来記載・YAGNI。
+
+baseline 例（一覧画面・committed）:
+
+<img src={itemsShot} alt="items list visual baseline" width={320} />
+
+```bash
+npm run test:visual    # Playwright toHaveScreenshot（baselineはgit管理・OS依存）
+```
