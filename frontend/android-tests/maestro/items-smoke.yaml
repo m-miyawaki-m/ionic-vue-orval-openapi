@@ -1,0 +1,29 @@
+# L5 Android smoke (Maestro) — Capacitor WebView app
+# Run (manual, env-dependent): maestro test android-tests/maestro/items-smoke.yaml
+#
+# IMPORTANT: MSW only runs in the Vite DEV build (main.ts gates it on
+# import.meta.env.DEV). A plain `npx cap run android` ships the production
+# `dist`, so there is NO mock backend: login and the items list will NOT load.
+# To exercise the full flow, build with MSW enabled or point the app at a
+# reachable backend — see android-tests/README.md ("Data dependency").
+#
+# WebView note: data-testid attributes inside the WebView are not reliably
+# exposed to Maestro's native matchers, so this flow matches on visible TEXT.
+appId: com.example.ionicvueorval
+---
+- launchApp:
+    clearState: true
+
+# Boots to the login screen (no backend needed for this assertion).
+- assertVisible: "Login"
+- assertVisible: "Sign in"
+
+# --- The steps below require data (MSW-in-build or a real backend). ---
+- tapOn: "Username"          # tapping the field label focuses the input
+- inputText: "demo"
+- tapOn: "Password"
+- inputText: "password1"
+- tapOn: "Sign in"
+
+- assertVisible: "Coffee"    # deterministic MSW fixture item
+- takeScreenshot: android-tests/screenshots/items-screen

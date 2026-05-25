@@ -33,3 +33,6 @@ npm-debug.log*
 
 # Playwright component-test build cache (report/results dirs ignored at repo root)
 /playwright/.cache
+
+# L5 Android smoke screenshots (runtime evidence; pasted into evidence Excel manually)
+/android-tests/screenshots
