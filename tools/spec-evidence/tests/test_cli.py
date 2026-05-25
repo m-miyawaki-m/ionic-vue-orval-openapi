@@ -24,6 +24,17 @@ class TestCli(unittest.TestCase):
             wb = load_workbook(os.path.join(d, "evidence.xlsx"))
             self.assertIn("L1境界値", wb.sheetnames)
 
+    def test_cli_missing_results_does_not_crash(self):
+        with tempfile.TemporaryDirectory() as d:
+            rc = cli.main([
+                "--boundary", os.path.join(FIX, "boundary.sample.json"),
+                "--doc", os.path.join(FIX, "doc.sample.json"),
+                "--results", os.path.join(d, "no-such-results.json"),
+                "--out-dir", d,
+            ])
+            self.assertEqual(rc, 0)
+            self.assertTrue(os.path.exists(os.path.join(d, "evidence.xlsx")))
+
 
 if __name__ == "__main__":
     unittest.main()
