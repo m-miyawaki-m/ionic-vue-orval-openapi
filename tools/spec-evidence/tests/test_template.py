@@ -24,6 +24,11 @@ class TestTemplate(unittest.TestCase):
             self.assertEqual(cover["B2"].value, "IT テスト確認書")
             legend = [cover.cell(r, 2).value for r in range(23, 27)]
             self.assertEqual(legend, ["OK", "NG", "-", "保留"])
+            # 利用データ section present
+            labels = [cover.cell(r, 2).value for r in range(1, cover.max_row + 1)]
+            self.assertIn("利用データ（テストデータ）", labels)
+            self.assertIn("テストアカウント", labels)
+            self.assertIn("固定フィクスチャ(Items)", labels)
 
             # category sheet: 9-column header at row 6
             cat = wb["02_画面表示"]

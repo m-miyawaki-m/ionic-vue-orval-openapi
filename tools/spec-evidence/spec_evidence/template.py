@@ -75,8 +75,24 @@ def _build_cover(ws, meta):
     ws.cell(30, 2, meta.get("version", "v1.0"))
     ws.cell(30, 3, meta.get("issued", ""))
     ws.cell(30, 4, "新規作成")
-    ws.column_dimensions["B"].width = 18
-    ws.column_dimensions["C"].width = 40
+
+    # 利用データ（テストデータ）— what data/accounts/env each test uses
+    _label(ws, "B32", "利用データ（テストデータ）")
+    td = meta.get("test_data", {})
+    data_rows = [
+        ("テストアカウント", td.get("account", "demo / password1（モック認証・非永続トークン）")),
+        ("環境/モック", td.get("env", "DEV=MSW固定データ（本番ビルドはMSW無し→実機はMSW-in-build/backend要）")),
+        ("固定フィクスチャ(Items)", td.get("fixtures", "Coffee(drink/¥350) / Sandwich(food/¥480) / Notebook(other/¥220)")),
+        ("境界値データ", td.get("boundary", "gen-cases 生成（OpenAPI＋画面項目CSV由来, tests/cases/*.cases.json）")),
+        ("入力値の所在", td.get("note", "各テスト項目の具体的な入力値は各カテゴリシートの「テスト項目／確認手順」列に記載")),
+    ]
+    for i, (k, v) in enumerate(data_rows, start=33):
+        _label(ws, f"B{i}", k)
+        ws[f"C{i}"] = v
+        ws[f"C{i}"].alignment = _WRAP
+
+    ws.column_dimensions["B"].width = 20
+    ws.column_dimensions["C"].width = 56
     for col in "DEF":
         ws.column_dimensions[col].width = 16
 
