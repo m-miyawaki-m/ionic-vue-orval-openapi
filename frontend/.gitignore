@@ -30,3 +30,6 @@ npm-debug.log*
 /platforms
 /plugins
 /www
+
+# Playwright component-test build cache (report/results dirs ignored at repo root)
+/playwright/.cache
