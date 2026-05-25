@@ -1,0 +1,43 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+import itemsShot from './assets/items.png'
+
+<Meta title="Test Strategy/4. Functional / Application層" />
+
+# Functional / Application層（画面連携 〜 全画面通しE2E）
+
+- Functional: 2+部品連携・モック・pre-merge
+- Application: アプリ全体・デプロイ可能バイナリ・post-merge（"binary"=Capacitorビルド）
+
+## 比較と採用理由
+
+| 候補 | 導入 | 並列/速度 | WebView/Capacitor | 証跡 | CI親和性 | コスト | 評価 |
+|---|---|---|---|---|---|---|---|
+| **Playwright**（採用） | ◎ | ◎ | ○(Web)/△(実機は別) | ◎ | ◎ | 無料 | 並列・トレース・スクショが強い |
+| Cypress | ◎ | △(無料は並列制約) | △ | ◎ | ○ | 無料(Cloud有料) | Cloud誘導・同一オリジン制約 |
+| WebdriverIO | △ | ○ | ◎(Appium連携) | ○ | ○ | 無料 | 設定重(L5 Appiumで活用) |
+| Nightwatch | △ | ○ | △ | ○ | ○ | 無料 | エコシステム小 |
+| TestCafe | ○ | ○ | △ | ○ | ○ | 無料 | WebDriver不要だが勢い停滞 |
+| Puppeteer | ○ | ○ | △(Chromiumのみ) | ○ | ○ | 無料 | 低レベル・ランナー非内蔵 |
+| Selenium | △ | △ | ○ | △ | ◎ | 無料 | 重く冗長・レガシ向け |
+
+候補ごとの判断:
+
+- **Playwright（採用）**: 既にL1〜L3でPlaywright/Viteに揃う。並列実行・自動待機・トレース・スクショ/動画・堅牢なセレクタを備え、Cloud課金の誘導が無い。MSWで決定的なFunctional/Applicationフローを高速・高証跡で回せる。
+- **Cypress（不採用）**: DXは優秀だが、無料での並列実行はCypress Cloud（有料）の協調が要り、歴史的に単一タブ/同一オリジン制約があり、Cloud寄り。有料への誘導を避けたい。
+- **WebdriverIO（不採用＝Web E2E用途）**: W3C標準で実機/Appiumに強く**L5で採用**するが、純Web E2EにはPlaywrightより設定が重い。
+- **Nightwatch（不採用）**: エコシステム/コミュニティが小さく勢いに欠ける。
+- **TestCafe（不採用）**: WebDriver不要は利点だがエコシステムが小さく開発の勢いが鈍い。
+- **Puppeteer（不採用）**: Chromium限定で低レベル（テストランナー/アサーション非内蔵）。上位互換のPlaywrightを採る。
+- **Selenium（不採用）**: W3Cの祖だが重く遅くボイラープレートが多い。レガシgrid/多言語が要る場合以外は不利。
+
+## 動かす
+
+```sh
+npm run test:e2e   # smoke / login-flow / scan-flow / item-crud
+```
+
+E2E到達画面の例:
+
+<img src={itemsShot} alt="items list (e2e reached)" width={320} />
+
+> Application層の注意: 本番Androidビルドは MSW が動かない（`import.meta.env.DEV` 分岐）。データ依存の確認は MSW-in-build か backend が前提（`frontend/android-tests/README.md`）。
