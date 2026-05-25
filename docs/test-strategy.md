@@ -59,6 +59,14 @@ L3 のベースライン画像は **OS / レンダラ依存**（本PoCは Window
 - **L5**: [`tool-comparison-L5.md`](./tool-comparison-L5.md) — Maestro vs Appium（Capacitor WebView）。
   スモーク + スクショ証跡用途では **Maestro を推奨**、厳密な DOM 操作/CI 統合なら Appium。
 
+## Storybook（コンポーネントカタログ）
+
+`@storybook/vue3-vite`（軽量構成・`@storybook/addon-docs` のみ）を**living design doc / カタログ**として併設。
+`ItemListItem.stories.ts` が drink/food/長い名前のバリアントを autodocs 付きで提供。
+`.storybook/preview.ts` で IonicVue を登録。テストランナーではなく**設計・確認用**の位置づけ
+（自動回帰は L2 CT / L3 ビジュアルが担当）。`npm run storybook`（dev）/ `npm run build-storybook`（静的出力、gitignore）。
+有料の Chromatic クラウドは使わない方針のため init 既定の Chromatic addon は除去済み。
+
 ## ハードウェア（カメラ OCR / スキャナ）
 
 `useOcr` / `useScanner` composable + アダプタで抽象化。L1/L2/L4 は **fake アダプタ**で自動テスト。
@@ -76,4 +84,6 @@ npm run test:android:maestro # L5 Maestro（手動・要エミュレータ）
 npm run test:android:appium  # L5 Appium（手動・要エミュレータ + Appium）
 npm run gen:cases            # 境界値ケース生成（cases.json + reconcile）
 npm run build                # 本番ビルド（vue-tsc + vite）
+npm run storybook            # Storybook dev サーバ（コンポーネントカタログ）
+npm run build-storybook      # Storybook 静的ビルド
 ```
