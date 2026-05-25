@@ -82,56 +82,102 @@ Android公式は **5層のテストピラミッド**を定義する（割合の�
 
 ### 3-1. Unit層 — 採用: Vitest（+ gen:cases）
 
-| 候補 | 導入 | 速度 | Vite統合 | エコシステム | コスト | 評価 |
+| 候補 | 導入 | 速度 | Vite/ESM/TS統合 | エコシステム | コスト | 評価 |
 |---|---|---|---|---|---|---|
 | **Vitest**（採用） | ◎ | ◎ | ◎ | ◎ | 無料 | Vite前提の本構成に最適 |
-| Jest | ○ | △ | △(別トランスパイル) | ◎ | 無料 | Vite/ESM/TS統合で不利 |
-| node:test | ○ | ○ | △ | △ | 無料 | アサーション/モック周辺が薄い |
+| Jest | ○ | △ | △(別トランスパイル) | ◎ | 無料 | 標準だがVite統合で不利 |
+| Mocha + Chai/Sinon | ○ | ○ | △ | ○ | 無料 | 部品を寄せ集める手間 |
+| node:test | ○ | ○ | △ | △ | 無料 | 周辺(モック/jsdom/cov)が薄い |
+| AVA / uvu | ○ | ◎ | △ | △ | 無料 | 高速・最小だがニッチ |
+| Jasmine | ○ | ○ | △ | ○ | 無料 | 古くESM/Vite弱 |
 
-採用理由: Viteと同一トランスフォーム経路で速く、`test.each` のデータ駆動が `gen:cases` の境界値JSONと相性良。jsdomで composable/store/zod を高速検証。
+候補ごとの判断:
+- **Vitest（採用）**: Viteと同一トランスフォーム経路でビルド設定を二重化せず、ESM/TSがネイティブ。`test.each` のデータ駆動が `gen:cases` の境界値JSONと噛み合う。jsdom環境で composable/store/zod を高速に回せ、watchも速い。Jest互換APIで学習資産も流用できる。
+- **Jest（不採用）**: 巨大エコシステムが魅力だが、Viteプロジェクトでは babel-jest/ts-jest/SWC など別トランスパイルとESM設定の摩擦が生じ、設定面が二重化し遅い。本構成での上積みが無い。
+- **Mocha + Chai/Sinon（不採用）**: 柔軟だがランナー＋アサート＋モック＋カバレッジを個別に組む手間。watch/Vite統合も弱い。
+- **node:test（不採用）**: 依存ゼロで前進中だが、モック/jsdom/カバレッジ等の周辺が薄く、Vite統合も無い。
+- **AVA / uvu（不採用）**: 高速・最小主義だがエコシステムが小さく、Vue/jsdom周りのツールが乏しい。
+- **Jasmine（不採用）**: アサーション同梱だがDXが古く、ESM/Viteとの相性が弱い。
 
 ### 3-2. Component層（挙動）— 採用: Playwright CT（主）/ Vitest browser（比較対象として併設）
 
 | 候補 | 導入 | 忠実度(実ブラウザ) | Ionic対応 | 証跡(部品スクショ) | 安定性 | コスト | 評価 |
 |---|---|---|---|---|---|---|---|
-| **Playwright CT**（推奨） | △ | ◎ | ○(IonicVue登録要) | ◎(toHaveScreenshot) | ○ | 無料 | 部品単位の見た目回帰が組込み |
-| Vitest browser mode | ○ | ◎ | ○(plugins:[IonicVue]) | ✕(0.34に部品スクショ無) | △(0.34実験的) | 無料 | L1資産流用可だが見た目証跡が弱い |
-| Vue Test Utils単体(jsdom) | ◎ | ✕(疑似DOM) | △ | ✕ | ◎ | 無料 | 忠実度低・Web Components描画不可 |
+| **Playwright CT**（推奨/主） | △ | ◎ | ○(IonicVue登録要) | ◎(toHaveScreenshot) | ○ | 無料 | 部品単位の見た目回帰が組込み |
+| **Vitest browser mode**（併設・比較） | ○ | ◎ | ○(plugins:[IonicVue]) | ✕(0.34に部品スクショ無) | △(0.34実験的) | 無料 | L1資産流用可だが見た目証跡が弱い |
+| @vue/test-utils単体(jsdom) | ◎ | ✕(疑似DOM) | △ | ✕ | ◎ | 無料 | Web Components描画不可 |
+| @testing-library/vue(jsdom) | ◎ | ✕(疑似DOM) | △ | ✕ | ◎ | 無料 | クエリは良いが忠実度低 |
+| Cypress Component Testing | ○ | ◎ | ○ | ◎ | ○ | 無料(Cloud有料) | 第2の自動化スタックで冗長 |
+| WebdriverIO browser runner | △ | ◎ | ○ | ○ | ○ | 無料 | 設定重め(L5 Appium用に温存) |
 
-採用理由（厚め）: 両ランナーとも基本描画は緑（検証済み）。差は**部品単位のビジュアル回帰の組込み有無**。証跡を重視する本PoCでは Playwright CT を主推奨。Vitest browser modeは「L1と同じ `@vue/test-utils` で書けるが 0.34 では部品スクショが無い」点を**動く比較として残す**価値があるため併設。
+候補ごとの判断:
+- **Playwright CT（採用・主）**: 実chromiumで Ionic Web Components が実際に upgrade/描画され忠実度が高い。`expect(component).toHaveScreenshot()` で部品単位のビジュアル回帰が組込み。E2E/visualとAPI共通。コスト: experimental表記、専用Viteビルド、propsがランナー↔ブラウザ境界をまたぐためシリアライズ可能要、jsdomより重い。両ランナーとも基本描画は緑（検証済み）。
+- **Vitest browser mode（採用・併設比較）**: 実ブラウザ忠実度＋L1の `@vue/test-utils` をそのまま流用できる利点。ただし0.34は実験的で部品スクショが無い。「馴染んだAPI vs 見た目証跡の欠如」というトレードオフを**動く比較として残す**価値があり併設。
+- **@vue/test-utils単体 / @testing-library/vue（不採用＝Component層ランナーとして）**: jsdomはカスタム要素/Ionicを忠実に実行せず、実レイアウト/描画が無いためComponent層の忠実度要件を満たさない（クエリ思想は実ブラウザランナー上で活かせる）。
+- **Cypress Component Testing（不採用）**: 実ブラウザCTは可能だがCypressランタイムが重く、Cloud寄り機能を避けたい。Playwrightと別の自動化スタックを二重に持つことになり冗長。
+- **WebdriverIO browser runner（不採用）**: 強力だが設定が重い。WDIOはL5 Appium用に温存し、高速な部品テストには使わない。
 
 ### 3-3. Component層（見た目）— 採用: Playwright `toHaveScreenshot`
 
-| 候補 | 導入 | 決定性 | baseline管理 | コスト | 評価 |
-|---|---|---|---|---|---|
-| **Playwright visual**（採用） | ○ | ◎(animations:disabled + MSW) | ローカルgit管理 | 無料 | E2Eと同ツールチェーンで一貫 |
-| Storybook + Chromatic | ◎ | ◎ | クラウド | **有料** | コスト方針で除外 |
-| jest-image-snapshot | ○ | ○ | ローカル | 無料 | Jet前提・別途ブラウザ駆動が必要 |
-| Loki / reg-suit | △ | ○ | ローカル/CI | 無料 | Storybook連携前提・構成が増える |
+| 候補 | 導入 | 決定性 | baseline管理 | 別スタック | コスト | 評価 |
+|---|---|---|---|---|---|---|
+| **Playwright visual**（採用） | ○ | ◎(animations:disabled+MSW) | ローカルgit | 不要(PWと同系) | 無料 | E2E/CTと一貫 |
+| jest-image-snapshot | ○ | ○ | ローカル | Jest+別駆動 | 無料 | Jestを足す羽目 |
+| BackstopJS | △ | ○ | ローカル | Puppeteer系 | 無料 | 設定重め・別スタック |
+| Loki / Lost Pixel | △ | ○ | ローカル/CI | Storybook前提 | 無料(一部cloud寄り) | 別差分サービス/CI配線増 |
+| reg-suit | △ | ○ | CI+ホスト | レポート基盤要 | 無料 | レポート保管先が必要 |
+| Chromatic / Percy / Applitools / Argos | ◎ | ◎ | クラウド | – | **有料/cloud** | コスト方針で除外 |
 
-採用理由: MSW決定的データ＋アニメ無効でブレを排除し、baselineをgitに置いて無料・ローカル完結。E2E(Playwright)と同系で学習コスト最小。**baselineのOS/レンダラ依存はCIで再生成が必要**な旨を明記（既知）。
+候補ごとの判断:
+- **Playwright visual（採用）**: E2E/CTと同ツールチェーンで一貫。MSW決定的データ＋`animations:'disabled'`でブレを排除し、baselineをgitに置いて無料・ローカル完結。注意: baselineはOS/レンダラ依存（Windows+chromium生成）でCIでは当該環境で再生成が必要。
+- **jest-image-snapshot（不採用）**: 画像差分は堅実だがJest前提で、スクショ撮影に別途ブラウザ駆動が要る。この用途のためだけにJestを足すのは過剰。
+- **BackstopJS（不採用）**: 成熟だがPuppeteer/設定が重く、Playwrightと別スタックになる。
+- **Loki / Lost Pixel / reg-suit（不採用）**: Storybook連携のビジュアル回帰（Storybookとの相性は良い）だが、別の差分サービスやCI配線・レポート保管先を要し、Playwright組込みに比べ構成が増える。Lost Pixel等は無料枠はあるがcloud寄り。
+- **Chromatic / Percy / Applitools / Argos（除外）**: クラウドSaaS（多くが有料、Argosも無料枠限定）でOSS/ローカル/無料方針に反する。
+- **将来オプション**: `@storybook/test-runner`+Playwrightでstoryをスナップショット化（見た目をカタログに紐付け）できる→将来記載・YAGNI。
 
 ### 3-4. Functional / Application層 — 採用: Playwright（E2E）
 
 | 候補 | 導入 | 並列/速度 | WebView/Capacitor | 証跡 | CI親和性 | コスト | 評価 |
 |---|---|---|---|---|---|---|---|
 | **Playwright**（採用） | ◎ | ◎ | ○(Web)/△(実機は別) | ◎ | ◎ | 無料 | 並列・トレース・スクショが強い |
-| Cypress | ◎ | △(無料は並列制約) | △ | ◎ | ○ | 無料(Cloudは有料) | 並列/タブ制約、Cloud誘導 |
-| WebdriverIO | △ | ○ | ◎(Appium連携) | ○ | ○ | 無料 | 設定重め（ただしL5 Appiumで一部活用） |
+| Cypress | ◎ | △(無料は並列制約) | △ | ◎ | ○ | 無料(Cloud有料) | Cloud誘導・同一オリジン制約 |
+| WebdriverIO | △ | ○ | ◎(Appium連携) | ○ | ○ | 無料 | 設定重(L5 Appiumで活用) |
 | Nightwatch | △ | ○ | △ | ○ | ○ | 無料 | エコシステム小 |
+| TestCafe | ○ | ○ | △ | ○ | ○ | 無料 | WebDriver不要だが勢い停滞 |
+| Puppeteer | ○ | ○ | △(Chromiumのみ) | ○ | ○ | 無料 | 低レベル・ランナー非内蔵 |
+| Selenium | △ | △ | ○ | △ | ◎ | 無料 | 重く冗長・レガシ向け |
 
-採用理由: 既にL1〜L3でPlaywright/Viteに揃っており、MSWで決定的なFunctional/Applicationフローを並列・高速・高証跡で回せる。Cypressは無料での並列制約とCloud誘導を避けたい。
+候補ごとの判断:
+- **Playwright（採用）**: 既にL1〜L3でPlaywright/Viteに揃う。並列実行・自動待機・トレース・スクショ/動画・堅牢なセレクタを備え、Cloud課金の誘導が無い。MSWで決定的なFunctional/Applicationフローを高速・高証跡で回せる。
+- **Cypress（不採用）**: DXは優秀だが、無料での並列実行はCypress Cloud（有料）の協調が要り、歴史的に単一タブ/同一オリジン制約があり、Cloud寄り。有料への誘導を避けたい。
+- **WebdriverIO（不採用＝Web E2E用途）**: W3C標準で実機/Appiumに強く**L5で採用**するが、純Web E2EにはPlaywrightより設定が重い。
+- **Nightwatch（不採用）**: エコシステム/コミュニティが小さく勢いに欠ける。
+- **TestCafe（不採用）**: WebDriver不要は利点だがエコシステムが小さく開発の勢いが鈍い。
+- **Puppeteer（不採用）**: Chromium限定で低レベル（テストランナー/アサーション非内蔵）。上位互換のPlaywrightを採る。
+- **Selenium（不採用）**: W3Cの祖だが重く遅くボイラープレートが多い。レガシgrid/多言語が要る場合以外は不利。
 
 ### 3-5. Release Candidate層（Android実機）— 採用: Maestro vs Appium（両方を動く比較として保持）
 
 | 候補 | 導入 | WebView(Capacitor)対応 | 記述量 | 安定性 | CI親和性 | 証跡 | コスト | 評価 |
 |---|---|---|---|---|---|---|---|---|
-| **Maestro**（スモーク推奨） | ◎ | ○(テキスト基準) | ◎(YAML) | ○ | ○(Cloudは有料/ローカル無料) | ◎ | 無料 | 起動スモーク+スクショに最適 |
-| **Appium**(+WDIO) | △ | ◎(WEBVIEW切替でDOM操作) | △(コード) | △(driver整合) | ◎ | ○ | 無料 | 厳密なDOM操作/CI統合向き |
-| Espresso | – | ✕(ネイティブ専用) | – | – | – | – | 無料 | WebViewアプリに不向き → 除外 |
-| Detox | – | ✕(React Native向け) | – | – | – | – | 無料 | スタック不一致 → 除外 |
+| **Maestro**（スモーク） | ◎ | ○(テキスト基準) | ◎(YAML) | ○ | ○(Cloud有料/ローカル無料) | ◎ | 無料 | 起動スモーク+スクショに最適 |
+| **Appium**(+WDIO) | △ | ◎(WEBVIEW切替でDOM操作) | △(コード) | △(driver整合) | ◎ | ○ | 無料 | 厳密DOM操作/CI統合向き |
+| Robolectric | – | ✕(JVM/ネイティブビュー) | – | – | – | – | 無料 | Web DOM対象外(層対応の注記のみ) |
+| Espresso | – | ✕(ネイティブ専用) | – | – | – | – | 無料 | WebViewに不向き→除外 |
+| UIAutomator | – | △(粗い) | – | – | – | – | 無料 | Appium(UiAutomator2)が内包 |
+| Detox | – | ✕(React Native向け) | – | – | – | – | 無料 | スタック不一致→除外 |
+| Calabash | – | – | – | – | – | – | – | 非推奨/メンテ終了→除外 |
 
-採用理由: スモーク＋スクショ証跡は Maestro が費用対効果で上。厳密なDOM操作/CI統合は Appium。**両方を動く比較として残す**（既存L5資産を発展）。共通制約: 本番ビルドにMSW無し → MSW-in-build か backend が前提（§1注記）。
+候補ごとの判断:
+- **Maestro（採用・スモーク）**: 単一バイナリ＋宣言的YAML、待機/リトライ内蔵、スクショ容易。Capacitor WebViewにはテキスト基準マッチが効く。Cloudは有料だがローカルは無料。
+- **Appium（採用・DOM精密）**: W3C/UiAutomator2でWEBVIEWコンテキストに切替えCSS/data-testid操作が可能、CI統合に強い。コスト: サーバ＋driver＋chromedriverのバージョン整合。
+- **Robolectric（不採用＝注記）**: Android公式のローカルComponentランナーだがJVM/ネイティブビュー前提。我々のComponent層はWeb DOMで既にPlaywright CT/Vitest browserが担う。Android概念対応の注記としてのみ載せる。
+- **Espresso（除外）**: ネイティブAndroidのインプロセスUIテストで、CapacitorのWebView DOM向けでない。
+- **UIAutomator（不採用）**: クロスアプリのネイティブ自動化でWebView DOMには粗い。AppiumのUiAutomator2 driverが有用部分を内包。
+- **Detox（除外）**: React Native向けグレーボックスE2Eでスタック不一致。
+- **Calabash（除外）**: 非推奨・メンテ終了。
+- 共通制約: 本番ビルドにMSW無し → MSW-in-build か backend が前提（§1注記）。
 
 ### 3-6. 見せる仕組み（カタログ基盤）— 採用: Storybook
 
@@ -141,12 +187,16 @@ Storybookは**テストランナーではなく**「コンポーネント・ワ�
 |---|---|---|---|---|---|---|---|
 | **Storybook**（採用） | △(重い/init侵入的) | ◎ | ◎(autodocs/MDX) | ◎ | ◎ | 無料(Chromatic不使用) | カタログ＋設計書として最有力 |
 | Histoire | ◎(軽量/Vueネイティブ) | ◎ | ○ | △(小規模) | ◎ | 無料 | MDX/Docs/addon弱・開発停滞気味 |
-| VitePress等のMDX単体 | ◎ | ✕(部品が生で動かない) | ◎ | – | – | 無料 | "動く"を満たせない |
+| Ladle | ◎(高速/Vite) | ◎ | △ | △ | ✕(React中心) | 無料 | Vue対応が弱く不適 |
+| VitePress/Docusaurus(MDX) | ◎ | ✕(部品が生で動かない) | ◎ | – | – | 無料 | "動く"を満たせない |
 | カタログ無し | – | – | – | – | – | – | リビング設計書価値を失う |
 
-採用理由（厚め）: 業界標準でautodocs/MDXとaddonが厚く「設計書＋カタログ」を1か所に統合でき、Vue3+Viteを公式サポート、ローカル完結・無料（有料Chromatic addonは除去済み）。既に導入・馴致済み（v10 init が `vitest.config` をworkspace化する侵入と重さがあったが `addon-docs` のみへ整理し `vitest.config` を復元する手当て済み）。再構築コストが小さい。
-
-不採用理由: Histoireは軽量だがMDX/Docs/addonが弱くメンテ停滞気味。VitePress単体は部品が生で動かず「動くリファレンス集」を満たさない（Storybook内で補助的にMDXは使う）。
+候補ごとの判断:
+- **Storybook（採用）**: 業界標準でautodocs/MDXとaddonが厚く「設計書＋カタログ」を1か所に統合でき、Vue3+Viteを公式サポート、ローカル完結・無料（有料Chromatic addonは除去済み）。既に導入・馴致済み（v10 init が `vitest.config` をworkspace化する侵入と重さがあったが `addon-docs` のみへ整理し `vitest.config` を復元する手当て済み）。再構築コストが小さい。
+- **Histoire（不採用）**: 軽量でVueネイティブだが、MDX/Docsとaddonが弱く、開発の勢いが停滞気味。「設計書＋カタログ＋将来拡張」を重視し見送り。
+- **Ladle（不採用）**: Vite製で高速なStorybook代替だがReact中心でVue対応が弱く、本構成に不適。
+- **VitePress / Docusaurus（不採用）**: 静的MDX記事は書けるが部品が生で動かず「動くリファレンス集」を満たさない。Storybook内で補助的にMDXを使う形に内包する。
+- **カタログ無し（不採用）**: テストのみではリビング設計書／見せる価値を失う。
 
 線引き: Storybookは CT/Visual の**置き換えではなく補完**。回帰の合否判定は引き続きPlaywright系。**将来オプション** `@storybook/test-runner`（Playwright駆動でstoryをスモーク/a11y/インタラクション化）は比較項目として記載のみ・本PoCでは保留(YAGNI)。**stories＝部品実例の単一ソース**で、カタログが見せ、必要ならCTがマウントするフィクスチャとして再利用。
 
