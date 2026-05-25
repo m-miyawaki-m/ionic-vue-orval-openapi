@@ -1,0 +1,36 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Test Strategy/1. 成果物×検証マトリクス" />
+
+# 成果物 × 検証マトリクス
+
+設計成果物（概要設計／詳細設計, 仕様 §7）を「検証層・ツール・比較/実例」に対応づける。
+
+## 概要設計
+
+| 成果物 | 何を規定 | 検証層 | ツール | 比較/実例 |
+|---|---|---|---|---|
+| API一覧（OpenAPI由来） | エンドポイント契約 | Unit | OpenAPI→zod + `gen:cases` | 生成（単一） |
+| 画面遷移図（puml） | 画面間遷移 | Functional/Application | Playwright | — |
+| 画面一覧 | 画面ID/URL | Application | Playwright（導線） | — |
+| 利用端末・HW構成 | 実機/カメラ/スキャナ | Release Candidate | Maestro/Appium ＋ 手動エビデンス | 比較◎ |
+
+## 詳細設計
+
+| 成果物 | 何を規定 | 検証層 | ツール | 比較/実例 |
+|---|---|---|---|---|
+| 画面項目定義書（csv） | 入力検証・境界値 | Unit | Vitest + `gen:cases` | 単一 |
+| イベント定義書（csv） | 操作→結果/遷移 | Functional | Playwright | — |
+| ストア定義書（csv） | 状態遷移 | Unit | Vitest | 単一 |
+| バリデーション定義 | 入力規則・エラー文言 | Unit | Vitest（zod） | 単一 |
+| コンポーネント定義 | props/emits・見た目 | Component | 挙動: CT vs Vitest browser ／ 見た目: Playwright visual | **比較◎** |
+| 画面レイアウト定義 | レイアウト・見た目 | Component(visual) | Playwright visual ＋（代替候補は§3） | **比較** |
+| コンポーネントツリー | 画面→子部品階層 | Component | Storybook カタログ（設計書として） | — |
+| シーケンス図（puml） | フロー導線 | Application | Playwright E2E / Maestro | — |
+| 状態遷移図（puml） | 状態 | Unit/Functional | Vitest / Playwright | — |
+| ルーティング定義 | path/guard/params | Functional | Playwright（route guard） | — |
+| デバイス抽象I/F | useScanner/useOcr | Unit/Component/Functional | fakeアダプタ ＋ Vitest/Playwright | — |
+| OCR項目マッピング | 認識テキスト→項目 | Unit | Vitest（ゴールデン） | — |
+| エラーハンドリング方針 | 例外/権限拒否/失敗表示 | Functional | Playwright（異常系） | — |
+
+実機HW（カメラOCR実認識・外付けスキャナー実連携）は自動化スコープ外＝手動＋エビデンス。
