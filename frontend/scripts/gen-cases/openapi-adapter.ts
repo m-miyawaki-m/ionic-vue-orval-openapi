@@ -11,6 +11,7 @@ interface OaProperty {
   maxLength?: number
   enum?: string[]
   pattern?: string
+  format?: string
   example?: string | number
 }
 
@@ -55,6 +56,7 @@ export function loadOpenapiConstraints(): FieldConstraint[] {
         maxLength: prop.maxLength,
         enumValues: prop.enum,
         pattern: prop.pattern,
+        format: prop.format,
         example: prop.example ?? '',
       }
       result.push(constraint)

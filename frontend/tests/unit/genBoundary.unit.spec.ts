@@ -59,4 +59,16 @@ describe('deriveBoundaryCases', () => {
     const c: FieldConstraint = { group: 'x', field: 'f', type: 'string', required: false, example: '' }
     expect(deriveBoundaryCases(c).some((x) => x.label === 'normal')).toBe(false)
   })
+
+  it('format → format付き文字列に valid/invalid を生成', () => {
+    const c: FieldConstraint = { group: 'user', field: 'email', type: 'string', required: true, format: 'email', example: 'a@example.com' }
+    const cases = deriveBoundaryCases(c)
+    expect(cases.some((x) => x.label === 'format:email:valid' && x.expectValid)).toBe(true)
+    expect(cases.some((x) => x.label === 'format:email:invalid' && !x.expectValid)).toBe(true)
+  })
+
+  it('format → format無しなら format ケースは出ない', () => {
+    const c: FieldConstraint = { group: 'item', field: 'name', type: 'string', required: true, minLength: 1, maxLength: 30, example: 'X' }
+    expect(deriveBoundaryCases(c).some((x) => x.label.startsWith('format:'))).toBe(false)
+  })
 })

@@ -1,4 +1,5 @@
 import { ABSENT, BoundaryCase, FieldConstraint } from './types'
+import { FORMAT_MAP } from './format'
 
 export function deriveBoundaryCases(c: FieldConstraint): BoundaryCase[] {
   const cases: BoundaryCase[] = []
@@ -35,6 +36,11 @@ export function deriveBoundaryCases(c: FieldConstraint): BoundaryCase[] {
     if (c.pattern) {
       cases.push({ value: String(c.example), expectValid: true, label: 'pattern:valid' })
       cases.push({ value: '!!', expectValid: false, label: 'pattern:invalid' })
+    }
+    if (c.format && FORMAT_MAP[c.format]) {
+      const fp = FORMAT_MAP[c.format]
+      cases.push({ value: fp.valid, expectValid: true, label: `format:${c.format}:valid` })
+      cases.push({ value: fp.invalid, expectValid: false, label: `format:${c.format}:invalid` })
     }
   }
 
