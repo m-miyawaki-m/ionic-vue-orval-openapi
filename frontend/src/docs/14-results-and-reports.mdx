@@ -1,0 +1,41 @@
+import { Meta } from '@storybook/addon-docs/blocks'
+
+<Meta title="Test Strategy/6. 結果の確認・レポート保存先" />
+
+# 結果の確認・レポート保存先
+
+各テスト層の結果がどこに残り、どう確認するかの一覧。レポートのリッチさはランナーで異なる。
+
+## 保存先と確認方法
+
+| 層 | コマンド | 結果の保存先 | 確認方法 |
+|---|---|---|---|
+| L1 Unit | `npm run test:unit` | ターミナル出力のみ | コンソール（各テスト名は `npm run test:unit -- --reporter=verbose`） |
+| L2 Component 挙動（Playwright CT） | `npm run test:ct` | ターミナル出力のみ | コンソール（`-- --reporter=list`） |
+| L2 Component 挙動（Vitest browser） | `npm run test:browser` | ターミナル出力のみ | コンソール（`-- --reporter=verbose`） |
+| L3 Visual（ビジュアル回帰） | `npm run test:visual` | **HTMLレポート** `frontend/playwright-report/`<br />基準画像 `frontend/tests/visual/visual.spec.ts-snapshots/*.png`<br />失敗時の実際/差分 `frontend/test-results/` | `npx playwright show-report` → http://localhost:9323 |
+| L4 Functional/Application（E2E） | `npm run test:e2e` | **HTMLレポート** `frontend/playwright-report/` | `npx playwright show-report` → http://localhost:9323 |
+| L5 Release Candidate（Android） | `npm run test:android:maestro` / `:appium` | 手動・スクショ（環境依存） | `frontend/android-tests/` の手順、実機エビデンス（スクショ） |
+
+## Playwright HTMLレポートの開き方
+
+e2e と visual は `playwright.config.ts` の `reporter: [['html', …]]` により HTML レポートを生成する。
+
+```bash
+cd frontend
+npm run test:e2e        # または test:visual（playwright-report/ を生成・上書き）
+npx playwright show-report   # http://localhost:9323 をブラウザで開く
+```
+
+各テストの成否・所要時間・ステップ・スクリーンショット、失敗時はトレースと**ビジュアル差分（actual / expected / diff）**を確認できる。
+
+## 注意
+
+- `playwright-report/` と `test-results/` は **gitignore**（ローカル成果物・コミットしない）。
+- HTMLレポートは `playwright test` 実行のたびに**上書き**される（e2e と visual は同一 `playwright-report/`）。`--reporter=list` 等で reporter を上書きして実行した場合は HTML は生成されない。
+- **Visual の基準画像は git 管理**（`tests/visual/visual.spec.ts-snapshots/`）で **OS/レンダラ依存**。別環境では再生成が必要。
+- CT / Unit / browser を**永続レポート化**したい場合: Vitest に `@vitest/ui` か JUnit/JSON レポーター、CT（`playwright-ct.config.ts`）に html reporter を追加（現状は未設定＝ターミナルのみ）。
+
+## 将来: 統合エビデンス（P5）
+
+P5 の Python ツール（`tools/spec-evidence`, openpyxl）が `tests/cases/*.cases.json` と各テスト結果（JSON/JUnit）を結合し、**テスト仕様書＋エビデンス Excel**（1行=1テスト項目＋実測 pass/fail＋スクショ貼付欄）を出力する計画。これが「人が結果を一覧で確認する」最終成果物になる。
