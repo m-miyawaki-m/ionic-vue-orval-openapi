@@ -1,0 +1,36 @@
+@startuml sequence-item-crud
+title シーケンス: Item 登録・更新
+
+actor User
+participant ItemFormPage
+participant "itemInputSchema (zod)" as ZOD
+participant "useItem" as Comp
+participant "create/updateItem (api)" as API
+participant "MSW /items" as MSW
+participant Router
+
+User -> ItemFormPage : name/price/category/code 入力, 送信
+ItemFormPage -> ItemFormPage : price 文字列→Number
+ItemFormPage -> ZOD : safeParse(payload)
+alt 検証失敗
+  ZOD --> ItemFormPage : issues
+  ItemFormPage --> User : item-form-error 表示
+else 検証成功
+  ItemFormPage -> Comp : save(input, editId?)
+  alt 新規 (id 無し)
+    Comp -> API : createItem(input)
+    API -> MSW : POST /api/items
+    MSW --> API : { id:999, ...input } (201)
+  else 編集 (id 有り)
+    Comp -> API : updateItem(id, input)
+    API -> MSW : PUT /api/items/{id}
+    MSW --> API : { id, ...input } (200)
+  end
+  API --> Comp : Item
+  ItemFormPage -> Router : replace('/tabs/tab1')
+  note right of MSW
+    POSTは永続しない (GET /items は固定fixture)。
+    E2Eは「エラー無く一覧へ戻る」を検証。
+  end note
+end
+@enduml

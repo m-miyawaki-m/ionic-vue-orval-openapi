@@ -1,0 +1,17 @@
+@startuml state-scan
+title 状態遷移: スキャン / OCR (useScanner / useOcr)
+
+[*] --> 待機
+待機 --> 読取中 : scan() / recognize()\n(scanning/recognizing = true)
+読取中 --> 成功 : adapter 解決\n(lastCode / lastText 更新)
+読取中 --> 失敗 : 例外\n(error に格納)
+成功 --> 待機 : 次の読取
+失敗 --> 待機 : リトライ
+
+待機 --> 不可 : isAvailable() = false\n(未接続/カメラ無し)
+不可 --> 待機 : 接続/権限付与
+
+note right of 成功
+  成功時: コード→検索 / テキスト→項目入力補助
+end note
+@enduml

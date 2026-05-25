@@ -1,0 +1,27 @@
+@startuml sequence-items
+title シーケンス: Items一覧取得 (MSW)
+
+participant TabItemsPage
+participant "useItems" as Comp
+participant "listItems() (api/items)" as API
+participant "MSW /items" as MSW
+
+TabItemsPage -> Comp : onMounted → load()
+Comp -> Comp : loading = true
+Comp -> API : listItems()
+API -> MSW : GET /api/items
+MSW --> API : Item[] (Coffee/Sandwich/Notebook)
+alt 成功
+  API --> Comp : items
+  Comp -> Comp : items = [...]; loading=false
+  Comp --> TabItemsPage : items-list 表示
+else 失敗
+  API --> Comp : throw
+  Comp -> Comp : error = e; loading=false
+  Comp --> TabItemsPage : items-error 表示
+end
+note right of TabItemsPage
+  0件なら items-empty。
+  各行は ItemListItem、@select で /items/:id へ。
+end note
+@enduml

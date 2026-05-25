@@ -1,0 +1,48 @@
+@startuml system
+title システム全体構成（ionic-vue-orval-openapi PoC）
+
+package "契約 (単一の真実)" {
+  [openapi/openapi.yaml] as OAS
+}
+
+package "コード生成 (Orval, npm run gen)" {
+  [API client\n(axios-functions, tags-split)] as APIC
+  [zod schemas] as ZOD
+  [MSW handlers (生成)] as MSWGEN
+}
+
+package "frontend (Ionic Vue 8)" {
+  [views (画面)] as VIEWS
+  [composables\n(useItems/useItem/useSearch/useScanner/useOcr)] as COMP
+  [stores (Pinia: auth)] as STORE
+  [validators (zod)] as VAL
+  [api/axios.ts mutator\n(baseURL:/api, 手書き)] as MUT
+  [mocks/handlers.ts\n+ fixtures (決定的)] as MSW
+}
+
+package "デバイス抽象 (実装未定)" {
+  [ScannerAdapter] as SCAN
+  [OcrAdapter] as OCR
+}
+
+node "Capacitor 5 / Android 13" as CAP
+
+OAS --> APIC
+OAS --> ZOD
+OAS --> MSWGEN
+APIC --> MUT
+COMP --> APIC
+VIEWS --> COMP
+VIEWS --> STORE
+VIEWS --> VAL
+STORE --> APIC
+COMP --> SCAN
+COMP --> OCR
+MUT ..> MSW : DEVビルドのみ\n(import.meta.env.DEV)
+VIEWS --> CAP : webDir=dist
+
+note right of MSW
+  本番(Android)ビルドはMSW無し。
+  L5実機はMSW-in-buildかbackendが前提。
+end note
+@enduml
