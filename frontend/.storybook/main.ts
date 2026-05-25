@@ -1,6 +1,7 @@
 import { fileURLToPath } from 'node:url';
 import type { StorybookConfig } from '@storybook/vue3-vite';
 import type { Plugin } from 'vite';
+import remarkGfm from 'remark-gfm';
 
 // Light setup: component catalog / living design doc only.
 // Extra init addons (Chromatic, onboarding, a11y, vitest) were removed to keep
@@ -31,7 +32,18 @@ const config: StorybookConfig = {
     "../src/**/*.stories.@(js|jsx|mjs|ts|tsx)"
   ],
   "addons": [
-    "@storybook/addon-docs"
+    {
+      // remark-gfm so GitHub-flavored markdown TABLES in our MDX render as HTML
+      // (default MDX/CommonMark leaves pipe tables as raw text).
+      name: "@storybook/addon-docs",
+      options: {
+        mdxPluginOptions: {
+          mdxCompileOptions: {
+            remarkPlugins: [remarkGfm],
+          },
+        },
+      },
+    },
   ],
   "framework": "@storybook/vue3-vite",
   viteFinal(config) {
